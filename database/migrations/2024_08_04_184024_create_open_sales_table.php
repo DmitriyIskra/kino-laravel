@@ -11,16 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('films', function (Blueprint $table) {
+        Schema::create('open_sales', function (Blueprint $table) {
             $table->id();
             $table->boolean('is_active')->default(0);
-            $table->string('poster')->nullable();
-            $table->string('title')->nullable();
-            $table->text('description')->nullable();
-            $table->string('duration')->nullable();
-            $table->string('country')->nullable();
-            $table->json('is_halls_id');
-
             $table->timestamps();
         });
     }
@@ -30,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('films');
+        Schema::dropIfExists('open_sales');
     }
 };

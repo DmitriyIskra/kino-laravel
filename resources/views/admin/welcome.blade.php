@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&amp;subset=cyrillic,cyrillic-ext,latin-ext" rel="stylesheet">
 </head>
 
-<body>
+<body> 
 
   <header class="page-header">
     <h1 class="page-header__title">Идём<span>в</span>кино</h1>
@@ -33,7 +33,7 @@
             <button class="conf-step__button conf-step__button-trash"></button>
           </li>
         </ul>
-        <button class="conf-step__button conf-step__button-accent">Создать зал</button>
+        <a class="conf-step__button conf-step__button-accent" href="/create_hall">Создать зал</a>
       </div>
     </section>
     
