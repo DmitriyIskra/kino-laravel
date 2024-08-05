@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hall;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
 
@@ -26,11 +27,19 @@ class ApiAdminController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Создать и удалить зал.
      */
-    public function create(Request $request)
+    public function createHall()
     {   
-        //
+        $result = Hall::query()->create();
+
+        return to_route('admin_welcome');
+    }
+    public function deleteHall($id)
+    {
+        $result = Hall::query()->where('id', $id)->delete();
+
+        return to_route('admin_welcome');
     }
 
     /**

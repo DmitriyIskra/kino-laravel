@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hall;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,7 +42,11 @@ class PageController extends Controller
     public function admin_page() {
         $user = Auth::user();
         if($user && $user->is_admin) {
-            return view('admin.welcome');
+            $halls = Hall::get();
+
+            return view('admin.welcome', [
+                'halls' => $halls,
+            ]);
         }
 
         return to_route('client_welcome');

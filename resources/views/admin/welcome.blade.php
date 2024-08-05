@@ -26,14 +26,20 @@
       <div class="conf-step__wrapper">
         <p class="conf-step__paragraph">Доступные залы:</p>
         <ul class="conf-step__list">
-          <li>Зал 1
-            <button class="conf-step__button conf-step__button-trash"></button>
-          </li>
-          <li>Зал 2
-            <button class="conf-step__button conf-step__button-trash"></button>
-          </li>
+          @if (count($halls))
+              @foreach ($halls as $item)
+              <li>Зал {{ $item->id }}
+                <a 
+                  class="conf-step__button conf-step__button-trash conf-step__button-trash-hall"
+                  href="/delete-hall/{{ $item->id }}"
+                ></a>
+              </li>
+              @endforeach
+          @else
+              <li>Доступныз залов нет.</li>
+          @endif
         </ul>
-        <a class="conf-step__button conf-step__button-accent" href="/create_hall">Создать зал</a>
+        <a class="conf-step__button conf-step__button-accent conf-step__create-hall-button" href="/create_hall">Создать зал</a>
       </div>
     </section>
     

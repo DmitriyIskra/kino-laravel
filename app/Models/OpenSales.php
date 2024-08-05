@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class OpenSales extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'is_active',
+    ];
 }

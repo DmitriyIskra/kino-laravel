@@ -15,3 +15,6 @@ Route::get('/login', [PageController::class, 'login_page'])->name('admin_login')
 Route::get('/admin', [PageController::class, 'admin_page'])->name('admin_welcome');
 
 Route::post('/login', [ApiAdminController::class, 'index']);
+
+Route::get('/create_hall', [ApiAdminController::class, 'createHall']);
+Route::get('/delete-hall/{id}', [ApiAdminController::class, 'deleteHall']);
