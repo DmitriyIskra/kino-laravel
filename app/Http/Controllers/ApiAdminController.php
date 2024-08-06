@@ -26,6 +26,10 @@ class ApiAdminController extends Controller
         return to_route('admin_login');
     }
 
+    public function getDataHall($id) {
+        
+    }
+
     /**
      * Создать и удалить зал.
      */

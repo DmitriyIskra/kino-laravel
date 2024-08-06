@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('halls', function (Blueprint $table) {
             $table->id();
-            $table->integer('row')->nullable();
-            $table->integer('place')->nullable();
+            $table->integer('row')->default(0);
+            $table->integer('place')->default(0);
             $table->decimal('price_standart')->nullable();
             $table->decimal('price_vip')->nullable();
             $table->json('sessions')->nullable();

@@ -496,9 +496,14 @@ select {
 
 .conf-step__hall {
   position: relative;
+
+  min-height: 400px;
   padding: 62px 32px 34px;
-  border: 2px solid #000000;
+
   text-align: center;
+
+  border: 2px solid #000000;
+  
 }
 
 .conf-step__hall::before {
