@@ -14,8 +14,10 @@ export default class ApiConfigureHall {
                 const response = await fetch(`/get_data_hall/${id}`);
 
                 const result = await response.json();
+
+                return result.response;
             } catch (error) {
-                throw new Error(
+                throw new Error( 
                     'Запрос на получение данных зала завершился ошибкой' 
                     + '' 
                     + error

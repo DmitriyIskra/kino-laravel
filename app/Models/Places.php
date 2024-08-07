@@ -12,5 +12,6 @@ class Places extends Model
     protected $fillable = [
         'is_hall_id',
         'type',
+        'free_places',
     ];
 }

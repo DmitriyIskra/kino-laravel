@@ -27,7 +27,9 @@ class ApiAdminController extends Controller
     }
 
     public function getDataHall($id) {
-        
+        $hall = Hall::where('id', $id)->first(['row', 'place']);
+
+        return response()->json(['response' => $hall]);
     }
 
     /**

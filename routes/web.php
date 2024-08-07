@@ -19,6 +19,7 @@ Route::post('/login', [ApiAdminController::class, 'index']);
 Route::get('/create_hall', [ApiAdminController::class, 'createHall']);
 Route::get('/delete-hall/{id}', [ApiAdminController::class, 'deleteHall']);
 
-Route::get('/get_data_hall/{id}', [ApiAdminController::class, 'deleteHall']);
+Route::get('/get_data_hall/{id}', [ApiAdminController::class, 'getDataHall']);
 
 
+ 

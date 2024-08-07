@@ -46,7 +46,7 @@
       </div>
     </section>
     
-    <section class="conf-step conf-step__configure-hall">
+    <section class="configure-hall conf-step conf-step__configure-hall">
       <header class="conf-step__header conf-step__header_opened">
         <h2 class="conf-step__title">Конфигурация залов</h2>
       </header>
@@ -63,7 +63,7 @@
                     class="conf-step__radio" 
                     name="chairs-hall" 
                     value="Зал {{ $item->id }}" 
-                    @if ($key == 0)
+                    @if ($key === 0)
                         checked
                     @endif 
                   >
@@ -79,12 +79,12 @@
         <div class="conf-step__legend">
           <label class="conf-step__label">
             Рядов, шт
-            <input type="text" class="conf-step__input conf-step__input-row" placeholder="{{ $halls[0]->row }}" >
+            <input type="text" class="conf-step__input conf-step__input-row" placeholder="@if(isset($halls[0])) {{ $halls[0]->row }} @endif" >
           </label>
           <span class="multiplier">x</span>
           <label class="conf-step__label">
             Мест в ряду, шт
-            <input type="text" class="conf-step__input conf-step__input-place" placeholder="{{ $halls[0]->place }}" >
+            <input type="text" class="conf-step__input conf-step__input-place" placeholder="@if(isset($halls[0])) {{ $halls[0]->row }} @endif" >
           </label>
         </div>
 
@@ -114,8 +114,8 @@
         </div>
         
         <fieldset class="conf-step__buttons text-center">
-          <button class="conf-step__button conf-step__button-regular">Отмена</button>
-          <input type="button" value="Сохранить" class="conf-step__button conf-step__button-accent">
+          <button class="conf-step__button conf-step__button-regular configure-hall__reset">Отмена</button>
+          <input class="conf-step__button conf-step__button-accent configure-hall__accent conf-step__button-accent_disabled" type="submit" value="Сохранить">
         </fieldset>                 
       </div>
     </section>

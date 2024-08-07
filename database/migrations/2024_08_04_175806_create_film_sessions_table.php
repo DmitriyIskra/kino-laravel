@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('film_sessions', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('is_film_id')->nullable();
+            $table->integer('free_places');
             $table->timestamp('time_from');
 
             $table->timestamps();
