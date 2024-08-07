@@ -45,7 +45,7 @@ export default class RedrawConfigureHall {
         if(this.row.value && !rows) this.row.value = '';
         if(this.place.value && !places) this.place.value = '';
         
-        if(rows) this.row.value = rows;
+        if(rows) this.row.value = rows; // !!!!!!!!!! НАДО ЧТОБ РАБОТАЛО  С PLACEHOLDER
         if(places) this.place.value = places;
     }
 
