@@ -53,7 +53,8 @@ export default class RedrawConfigureHall {
     renderHall(rows, places) {
         if(this.hallWrapper.children.length) this.hallWrapper.innerHTML = '';
 
-        if(rows, places) {
+        if(rows && places) {
+            console.log(rows, places)
             const elements = this.patternHall(rows, places);
 
             this.hallWrapper.append(...elements);

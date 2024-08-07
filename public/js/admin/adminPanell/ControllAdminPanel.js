@@ -53,7 +53,8 @@ export default class ControllAdminPanel {
         // включаем/выключаем кнопку сохранения, если нет мест то и сохранять нет смысла
         if(places) {
             this.redraw.hall.stateButtonSave('on');
-        } else {
+        } 
+        if(!rows || !places) {
             this.redraw.hall.stateButtonSave('off');
         }
     }

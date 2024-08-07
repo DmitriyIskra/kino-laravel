@@ -79,12 +79,12 @@
         <div class="conf-step__legend">
           <label class="conf-step__label">
             Рядов, шт
-            <input type="text" class="conf-step__input conf-step__input-row" value="@if(isset($halls[0])) {{ $halls[0]->row ?? 0 }} @endif" >
+            <input type="text" class="conf-step__input conf-step__input-row" placeholder="0" @if(isset($halls[0])) value="{{ $halls[0]->row ?? '' }}" @endif >
           </label>
           <span class="multiplier">x</span>
           <label class="conf-step__label">
             Мест в ряду, шт
-            <input type="text" class="conf-step__input conf-step__input-place" value="@if(isset($halls[0])) {{ $halls[0]->place ?? 0 }} @endif" >
+            <input type="text" class="conf-step__input conf-step__input-place" placeholder="0" @if(isset($halls[0])) value="{{ $halls[0]->place ?? '' }}" @endif >
           </label>
         </div>
 
