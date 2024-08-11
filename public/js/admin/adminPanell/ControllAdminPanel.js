@@ -6,16 +6,30 @@ export default class ControllAdminPanel {
         this.click = this.click.bind(this);
         this.input = this.input.bind(this);
 
+        // стартовые значения к которым можно сбросить
+        // при нажатии кнопки отмена
+        this.initialData = {
+            row : null,
+            amount : null,
+            typePlaces : [],
+        }
+
+        // новые данные о количестве мест и рядов
+        // если были изменения
         this.newPlaces = {
             row: null,
             amount: null,
         }
 
+        // новые данные о типах кресел если были изменения
         this.newTypePlaces = [];
     }
 
     init() {
         this.registerEvents(); 
+
+        this.parseInitialData();
+        console.log(this.initialData)
     }
 
     registerEvents() {
@@ -31,71 +45,109 @@ export default class ControllAdminPanel {
                 const result = await this.api.hall.read('hall', id_hall);
                 this.redraw.hall.renderHall(result.row, result.place);
                 this.redraw.hall.renderValues(result.row, result.place);
+
+                this.parseInitialData();
                 // данные только загружены ничего не менялось кнопку выключаем
                 this.redraw.hall.stateButtonSave('off'); 
             })()
         }
-
-        // -----------============ CHAIR TYPE
+        // !!!!!!!!!!!!!!! ОТРИСОВЫВАТЬ ТИП КРЕСЛА И ПРИ ЗАГРУЗКЕ И ПРИ ОТМЕНЕ И СОЗДАТЬ КРЕСЛА В БД ПРИ СОХРАНЕНИИ!!!!!!!!!!!!!!!!!!!!!!!!
+        // -----------============ меняем CHAIR TYPE
         if(e.target.closest('.conf-step__chair')) {
             const el = e.target;
             this.redraw.hall.changeHall(el);
             this.redraw.hall.stateButtonSave('on');
 
             // сохраняем измененные креасла
+            // актуальный список мест и типов
+            this.newTypePlaces = [...this.parseTypePlaces()];
+        }
+
+        // --------------============ сброс внесенных изменений
+        if(e.target.closest('.configure-hall__reset')) {
+            console.log(this.initialData)
+            // нужно сбрасывать не просто к нулю, а к первоначальному значению
+            this.redraw.hall.renderHall(this.initialData.row, this.initialData.amount);
+            this.redraw.hall.renderValues(this.initialData.row, this.initialData.amount);
             
+            /** данные были сброшены в первоначальное значение, сохранять нечего */ 
+            this.redraw.hall.stateButtonSave('off');
         }
 
         // --------------============ Сохраняем изменения на сервер
         if(e.target.closest('.configure-hall__accent')) {
             
         }
-
-        // --------------============ сброс внесенных изменений
-        if(e.target.closest('.configure-hall__accent')) {
-            // нужно сбрасыватьне просто к нулю, а к первоначальному значению
-            // эти значения можно сохранить в redraw при загрузке
-
-
-        }
     }
 
     input(e) {
-        let rows;
-        let places;
-        
+        let obj = null;
+
         if(e.target.closest('.conf-step__input-row') 
         || e.target.closest('.conf-step__input-place')) {
-            rows = +this.redraw.hall.row.value || 0;
-            places = +this.redraw.hall.place.value || 0;
+            obj = this.parseRowAmount();
         }
         
-        // формируем места
-        this.redraw.hall.renderHall(rows, places);
-
         // включаем/выключаем кнопку сохранения, если нет мест то и сохранять нет смысла
-        if(places) {
+        if(obj?.places) {
+            // формируем места
+            this.redraw.hall.renderHall(obj.rows, obj.places);
+
             this.redraw.hall.stateButtonSave('on');
 
             // сохраняем изменения о количестве рядом и мест
-            this.newPlaces.row = rows;
-            this.newPlaces.amount = places;
+            this.newPlaces.row = obj.rows;
+            this.newPlaces.amount = obj.places;
 
-            this.newTypePlaces.length = 0;
-            
-            [...this.redraw.hall.hallWrapper.children].forEach(item => {
-                [...item.children].forEach(place => {
-                    const id = +place.dataset.place_id;
-                    const type = place.dataset.place_type;
-    
-                    this.newTypePlaces.push({id, type});
-                })
-            });
-            
-            console.log(this.newTypePlaces)
+            // сохраняем актуальный список мест и типов
+            this.newTypePlaces = [...this.parseTypePlaces()];
         } 
-        if(!rows || !places) {
+        if(!obj?.rows || !obj?.places) {
             this.redraw.hall.stateButtonSave('off');
         }
+    }
+
+    // сохраняем стартовые значения для кнопки отмена
+    // и возвращению к первоначальному состоянию
+    parseInitialData() {
+        const rows = this.redraw.hall.row.value;
+        const places = this.redraw.hall.place.value;
+
+        if(rows && places) {
+            const arr = this.parseTypePlaces();
+
+            this.initialData.row = rows;
+            this.initialData.amount = places;
+            this.initialData.typePlaces = [...arr];
+        } else {
+            this.initialData.row = null;
+            this.initialData.amount = null;
+            this.initialData.typePlaces = [];
+        }
+    }
+
+    /** Собирает и возвращает массив объектов {id, type} */
+    parseTypePlaces() {
+        this.newTypePlaces.length = 0;
+
+        const arr = [];
+
+        [...this.redraw.hall.hallWrapper.children].forEach(item => {
+            [...item.children].forEach(place => {
+                const id = +place.dataset.place_id;
+                const type = place.dataset.place_type;
+
+                arr.push({id, type});
+            })
+        });
+
+        return arr;
+    }
+
+    parseRowAmount() {
+        const rows = +this.redraw.hall.row.value || 0;
+        const places = +this.redraw.hall.place.value || 0;
+
+        return {rows, places};
     }
 }
