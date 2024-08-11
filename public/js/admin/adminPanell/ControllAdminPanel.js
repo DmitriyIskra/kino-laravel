@@ -5,6 +5,13 @@ export default class ControllAdminPanel {
 
         this.click = this.click.bind(this);
         this.input = this.input.bind(this);
+
+        this.newPlaces = {
+            row: null,
+            amount: null,
+        }
+
+        this.newTypePlaces = [];
     }
 
     init() {
@@ -34,6 +41,22 @@ export default class ControllAdminPanel {
             const el = e.target;
             this.redraw.hall.changeHall(el);
             this.redraw.hall.stateButtonSave('on');
+
+            // сохраняем измененные креасла
+            
+        }
+
+        // --------------============ Сохраняем изменения на сервер
+        if(e.target.closest('.configure-hall__accent')) {
+            
+        }
+
+        // --------------============ сброс внесенных изменений
+        if(e.target.closest('.configure-hall__accent')) {
+            // нужно сбрасыватьне просто к нулю, а к первоначальному значению
+            // эти значения можно сохранить в redraw при загрузке
+
+
         }
     }
 
@@ -53,6 +76,23 @@ export default class ControllAdminPanel {
         // включаем/выключаем кнопку сохранения, если нет мест то и сохранять нет смысла
         if(places) {
             this.redraw.hall.stateButtonSave('on');
+
+            // сохраняем изменения о количестве рядом и мест
+            this.newPlaces.row = rows;
+            this.newPlaces.amount = places;
+
+            this.newTypePlaces.length = 0;
+            
+            [...this.redraw.hall.hallWrapper.children].forEach(item => {
+                [...item.children].forEach(place => {
+                    const id = +place.dataset.place_id;
+                    const type = place.dataset.place_type;
+    
+                    this.newTypePlaces.push({id, type});
+                })
+            });
+            
+            console.log(this.newTypePlaces)
         } 
         if(!rows || !places) {
             this.redraw.hall.stateButtonSave('off');
