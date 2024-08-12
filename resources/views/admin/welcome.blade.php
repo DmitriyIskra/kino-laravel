@@ -63,6 +63,7 @@
                     class="conf-step__radio" 
                     name="chairs-hall" 
                     value="Зал {{ $item->id }}" 
+                    data-id_hall="{{ $item->id }}"
                     @if ($key === 0)
                         checked
                     @endif 
@@ -79,12 +80,24 @@
         <div class="conf-step__legend">
           <label class="conf-step__label">
             Рядов, шт
-            <input type="text" class="conf-step__input conf-step__input-row" placeholder="0" @if(isset($halls[0])) value="{{ $halls[0]->row ?? '' }}" @endif >
+            <input 
+              type="text" 
+              class="conf-step__input conf-step__input-row" 
+              placeholder="0" 
+              @if(isset($halls[0])) value="{{ $halls[0]->row ?? '' }}" @endif 
+              @if (!isset($halls[0])) disabled @endif
+            >
           </label>
           <span class="multiplier">x</span>
           <label class="conf-step__label">
             Мест в ряду, шт
-            <input type="text" class="conf-step__input conf-step__input-place" placeholder="0" @if(isset($halls[0])) value="{{ $halls[0]->place ?? '' }}" @endif >
+            <input 
+              type="text" 
+              class="conf-step__input conf-step__input-place" 
+              placeholder="0" 
+              @if(isset($halls[0])) value="{{ $halls[0]->place ?? '' }}" @endif 
+              @if (!isset($halls[0])) disabled @endif
+            >
           </label>
         </div>
 
@@ -105,7 +118,7 @@
                 @for ($i = 0; $i < $halls[0]->row; $i++)
                   <div class="conf-step__row">
                     @for ($j = 0; $j < $halls[0]->place; $j++)
-                      <span class="conf-step__chair conf-step__chair_standart"></span>
+                      <span class="conf-step__chair conf-step__chair_standart" data-place_type="standart"></span>
                     @endfor
                   </div>
                 @endfor

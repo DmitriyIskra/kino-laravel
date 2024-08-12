@@ -2,6 +2,9 @@ export default class RedrawConfigureHall {
     constructor(section) {
         this.section = section;
 
+        // Кнопки выбора зала
+        this.hallsButtons = this.section.querySelectorAll('.conf-step__radio');
+        
         // input с заданным количеством рядов и мест
         this.row = this.section.querySelector('.conf-step__input-row');
         this.place = this.section.querySelector('.conf-step__input-place');
@@ -79,7 +82,7 @@ export default class RedrawConfigureHall {
                 if(places) {
                     for(let j = 0; j < places; j += 1) {
                         const span = this.createElement('span', ['conf-step__chair', 'conf-step__chair_standart']);
-                        span.dataset.place_id = counter += 1;
+                        span.dataset.chair_num = counter += 1;
                         span.dataset.place_type = 'standart';
                         div.append(span);
                     }

@@ -11,7 +11,8 @@ class Places extends Model
 
     protected $fillable = [
         'is_hall_id',
+        'chair_num',
         'type',
-        'free_places',
+        'is_free',
     ];
 }

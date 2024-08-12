@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::create('places', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('is_hall_id')->nullable();
+            $table->integer('chair_num')->unsigned();
+            $table->bigInteger('is_hall_id')->unsigned();
+            $table->foreign('is_hall_id')->references('id')->on('halls')->onDelete('cascade');
             $table->string('type')->nullable();
+            $table->boolean('is_free')->default(true);
             $table->timestamps();
         });
     }

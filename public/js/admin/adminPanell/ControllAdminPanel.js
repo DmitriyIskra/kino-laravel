@@ -23,13 +23,17 @@ export default class ControllAdminPanel {
 
         // новые данные о типах кресел если были изменения
         this.newTypePlaces = [];
+
+        // активная кнопка выбора зала
+        this.activeButtonHall = null;
     }
 
     init() {
         this.registerEvents(); 
 
         this.parseInitialData();
-        console.log(this.initialData)
+
+        this.parseActiveHall();
     }
 
     registerEvents() {
@@ -47,11 +51,16 @@ export default class ControllAdminPanel {
                 this.redraw.hall.renderValues(result.row, result.place);
 
                 this.parseInitialData();
+
+                this.parseActiveHall();
                 // данные только загружены ничего не менялось кнопку выключаем
                 this.redraw.hall.stateButtonSave('off'); 
             })()
         }
         // !!!!!!!!!!!!!!! ОТРИСОВЫВАТЬ ТИП КРЕСЛА И ПРИ ЗАГРУЗКЕ И ПРИ ОТМЕНЕ И СОЗДАТЬ КРЕСЛА В БД ПРИ СОХРАНЕНИИ!!!!!!!!!!!!!!!!!!!!!!!!
+        // В МИГРАЦИЯХ СВЯЗАТЬ КРЕСЛА И ЗАЛ 
+        // ПРИ НАЧАЛЬНОЙ ЗАГРУЗКЕ ЕЩЕ НЕ ПОНЯТЕН ТИП КРЕСЛА ПОЭТОМУ СТАВИМ СТАНДАРТ
+
         // -----------============ меняем CHAIR TYPE
         if(e.target.closest('.conf-step__chair')) {
             const el = e.target;
@@ -61,11 +70,15 @@ export default class ControllAdminPanel {
             // сохраняем измененные креасла
             // актуальный список мест и типов
             this.newTypePlaces = [...this.parseTypePlaces()];
+            
+            // обновляем количество мест и рядов
+            const obj = this.parseRowAmount();
+            this.newPlaces.row = obj.rows;
+            this.newPlaces.amount = obj.places;
         }
 
         // --------------============ сброс внесенных изменений
         if(e.target.closest('.configure-hall__reset')) {
-            console.log(this.initialData)
             // нужно сбрасывать не просто к нулю, а к первоначальному значению
             this.redraw.hall.renderHall(this.initialData.row, this.initialData.amount);
             this.redraw.hall.renderValues(this.initialData.row, this.initialData.amount);
@@ -76,7 +89,17 @@ export default class ControllAdminPanel {
 
         // --------------============ Сохраняем изменения на сервер
         if(e.target.closest('.configure-hall__accent')) {
-            
+            const id_hall = +this.activeButtonHall.dataset.id_hall;
+
+            (async () => {
+                const data = {
+                    id_hall,
+                    amount_places : this.newPlaces,
+                    typesPlaces : this.newTypePlaces,
+                }
+
+                const resultHall = await this.api.hall.update(data);
+            })()
         }
     }
 
@@ -134,20 +157,30 @@ export default class ControllAdminPanel {
 
         [...this.redraw.hall.hallWrapper.children].forEach(item => {
             [...item.children].forEach(place => {
-                const id = +place.dataset.place_id;
+                const chair_num = +place.dataset.chair_num;
                 const type = place.dataset.place_type;
 
-                arr.push({id, type});
+                arr.push({chair_num, type});
             })
         });
 
         return arr;
     }
 
+    // сбор данных о введенных количестве рядов и мест
+    // если вводить что то кроме цифр, ничего не будет отрисовываться
     parseRowAmount() {
         const rows = +this.redraw.hall.row.value || 0;
         const places = +this.redraw.hall.place.value || 0;
 
         return {rows, places};
+    }
+
+    // поиск активного зала
+    parseActiveHall() {
+        if(this.redraw.hall.hallsButtons.length) {
+            this.activeButtonHall = [...this.redraw.hall.hallsButtons]
+                .find(item => item.checked);
+        }
     }
 }

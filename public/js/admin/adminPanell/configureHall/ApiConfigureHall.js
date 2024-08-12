@@ -26,8 +26,28 @@ export default class ApiConfigureHall {
         }
     }
 
-    update() {
+    async update(data) {
+        try {
+            const response = await fetch('/update_hall_places', {
+                method : "POST",
+                headers : {
+                    "X-CSRF-TOKEN" : this.token,
+                    "Content-Type" : "application/json",
+                },
+                body : JSON.stringify(data),
+            }) 
 
+            const result = await response.json();
+            console.log(result);
+        } catch (error) {
+            throw new Error( 
+                'Запрос на сохранение данных зала и мест завершился ошибкой' 
+                + '' 
+                + error
+            ) 
+        }
+
+        
     }
 
     delete() {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hall;
+use App\Models\Places;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
 
@@ -75,9 +76,35 @@ class ApiAdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        $id_hall = $request->id_hall;
+        $amount_places = $request->amount_places;
+        $places = $request->typesPlaces;
+
+        $resultHall = Hall::query()->where('id', $id_hall)->update([
+            'row' => $amount_places['row'],
+            'place' => $amount_places['amount'],
+        ]);
+
+        foreach ($places as $value) {
+            $place = Places::query()->where('chair_num', $value['chair_num'])->where('is_hall_id', $id_hall)->first();
+
+            if(!$place) {
+                // создаем
+                Places::create([
+                    'is_hall_id' => $id_hall,
+                    'chair_num' => $value['chair_num'],
+                    'type' => $value['type'],
+                ]);
+            } else {
+                // обновляем
+            }
+        }
+        
+        
+
+        return response()->json(['resultHall' => $places]);
     }
 
     /**
