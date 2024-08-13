@@ -108,7 +108,7 @@
           <span class="conf-step__chair conf-step__chair_disabled"></span> — заблокированные (нет кресла)
           <p class="conf-step__hint">Чтобы изменить вид кресла, нажмите по нему левой кнопкой мыши</p>
         </div>  
-        
+        {{dd($places)}}
         {{-- conf-step__chair_disabled - не доступно --}}
         {{-- conf-step__chair_standart - стандарт --}}
         {{-- conf-step__chair_vip - vip --}}

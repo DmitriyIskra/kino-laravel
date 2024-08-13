@@ -13,7 +13,7 @@
 
 <body>
   <div class="admin__login">
-    <a href="/login" title="login">Админ-панель</a>
+    <a href="/login" title="login">Администраторская</a>
   </div>
 
   <header class="page-header">

@@ -91,14 +91,17 @@ class ApiAdminController extends Controller
             $place = Places::query()->where('chair_num', $value['chair_num'])->where('is_hall_id', $id_hall)->first();
 
             if(!$place) {
-                // создаем
                 Places::create([
                     'is_hall_id' => $id_hall,
                     'chair_num' => $value['chair_num'],
                     'type' => $value['type'],
                 ]);
             } else {
-                // обновляем
+                Places::query()->where('chair_num', $value['chair_num'])->where('is_hall_id', $id_hall)->update([
+                    'is_hall_id' => $id_hall,
+                    'chair_num' => $value['chair_num'],
+                    'type' => $value['type'],
+                ]);
             }
         }
         

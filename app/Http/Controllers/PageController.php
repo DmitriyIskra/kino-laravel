@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hall;
+use App\Models\Places;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,9 +44,11 @@ class PageController extends Controller
         $user = Auth::user();
         if($user && $user->is_admin) {
             $halls = Hall::get();
+            $places = Places::where('hall_id', $halls[0]->id)->get();
 
             return view('admin.welcome', [
                 'halls' => $halls,
+                'places' => $places
             ]);
         }
 
