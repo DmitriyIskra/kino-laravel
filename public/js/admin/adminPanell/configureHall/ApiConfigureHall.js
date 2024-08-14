@@ -8,7 +8,6 @@ export default class ApiConfigureHall {
     }
 
     async read(action, id) {
-        
         if(action === 'hall') { 
             try {
                 const response = await fetch(`/get_data_hall/${id}`);
@@ -38,7 +37,8 @@ export default class ApiConfigureHall {
             }) 
 
             const result = await response.json();
-            console.log(result);
+            console.log(result)
+            return true;
         } catch (error) {
             throw new Error( 
                 'Запрос на сохранение данных зала и мест завершился ошибкой' 

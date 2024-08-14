@@ -10,7 +10,7 @@ class Places extends Model
     use HasFactory;
 
     protected $fillable = [
-        'is_hall_id',
+        'hall_id',
         'chair_num',
         'type',
         'is_free',

@@ -108,20 +108,24 @@
           <span class="conf-step__chair conf-step__chair_disabled"></span> — заблокированные (нет кресла)
           <p class="conf-step__hint">Чтобы изменить вид кресла, нажмите по нему левой кнопкой мыши</p>
         </div>  
-        {{dd($places)}}
+        
         {{-- conf-step__chair_disabled - не доступно --}}
         {{-- conf-step__chair_standart - стандарт --}}
         {{-- conf-step__chair_vip - vip --}}
         <div class="conf-step__hall">
           <div class="conf-step__hall-wrapper">
-            @if (count($halls))
-                @for ($i = 0; $i < $halls[0]->row; $i++)
-                  <div class="conf-step__row">
-                    @for ($j = 0; $j < $halls[0]->place; $j++)
-                      <span class="conf-step__chair conf-step__chair_standart" data-place_type="standart"></span>
-                    @endfor
-                  </div>
-                @endfor
+            @if (isset($places) && count($places))
+              @foreach ($places as $item)
+                <div class="conf-step__row">
+                  @foreach ($item as $val)
+                    <span 
+                      class="conf-step__chair conf-step__chair_{{ $val['type'] }}" 
+                      data-chair_num="{{ $val['chair_num'] }}" 
+                      data-place_type="{{ $val['type'] }}"
+                    ></span>
+                  @endforeach
+                </div>
+              @endforeach
             @endif
           </div>  
         </div>
@@ -249,7 +253,7 @@
         <p class="conf-step__paragraph">Всё готово, теперь можно:</p>
         <button class="conf-step__button conf-step__button-accent">Открыть продажу билетов</button>
       </div>
-    </section>    
+    </section>   
   </main>
 </body>
 </html>

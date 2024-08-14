@@ -53,11 +53,11 @@ export default class RedrawConfigureHall {
     }
 
     // отрисовка зала (ряды и места)
-    renderHall(rows, places) {
+    renderHall(rows, places, chairs) {
         if(this.hallWrapper.children.length) this.hallWrapper.innerHTML = '';
-        console.log(rows, places)
+
         if(rows && places) {
-            const elements = this.patternHall(rows, places);
+            const elements = this.patternHall(rows, places, chairs);
 
             this.hallWrapper.append(...elements);
         }
@@ -70,7 +70,7 @@ export default class RedrawConfigureHall {
     }
 
 
-    patternHall(rows, places) {
+    patternHall(rows, places, chairs) {
         // собираем в массив строки с содержимым
         const arr = [];
         let counter = 0
@@ -79,13 +79,23 @@ export default class RedrawConfigureHall {
             for(let i = 0; i < rows; i += 1) {
                 const div = this.createElement('div', ['conf-step__row']);
                 
-                if(places) {
+                // новый зал первое формирование кресел
+                if(places && !chairs?.length) {
                     for(let j = 0; j < places; j += 1) {
                         const span = this.createElement('span', ['conf-step__chair', 'conf-step__chair_standart']);
                         span.dataset.chair_num = counter += 1;
                         span.dataset.place_type = 'standart';
                         div.append(span);
                     }
+                } else if(places && chairs.length) {
+                    // вторичное формирование кресел
+                    chairs[i].forEach(item => {
+                        const typeClass = `conf-step__chair_${item.type}`
+                        const span = this.createElement('span', ['conf-step__chair', typeClass]);
+                        span.dataset.chair_num = item.chair_num;
+                        span.dataset.place_type = item.type;
+                        div.append(span);
+                    })
                 }
 
                 arr.push(div);

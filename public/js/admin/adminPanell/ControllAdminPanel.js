@@ -47,7 +47,7 @@ export default class ControllAdminPanel {
             const id_hall = +e.target.closest('li').dataset.id_hall;
             (async () => {
                 const result = await this.api.hall.read('hall', id_hall);
-                this.redraw.hall.renderHall(result.row, result.place);
+                this.redraw.hall.renderHall(result.row, result.place); // !!!!!!!!!!!!!!!!!
                 this.redraw.hall.renderValues(result.row, result.place);
 
                 this.parseInitialData();
@@ -57,9 +57,11 @@ export default class ControllAdminPanel {
                 this.redraw.hall.stateButtonSave('off'); 
             })()
         }
-        // !!!!!!!!!!!!!!! ОТРИСОВЫВАТЬ ТИП КРЕСЛА И ПРИ ЗАГРУЗКЕ И ПРИ ОТМЕНЕ И СОЗДАТЬ КРЕСЛА В БД ПРИ СОХРАНЕНИИ!!!!!!!!!!!!!!!!!!!!!!!!
-        // В МИГРАЦИЯХ СВЯЗАТЬ КРЕСЛА И ЗАЛ 
-        // ПРИ НАЧАЛЬНОЙ ЗАГРУЗКЕ ЕЩЕ НЕ ПОНЯТЕН ТИП КРЕСЛА ПОЭТОМУ СТАВИМ СТАНДАРТ
+
+        // !!!!!!!!!!!! ПРИ ПЕРЕКЛЮЧЕНИИ ЗАЛА ОТРИСОВЫВАТЬ ТИПЫ КРЕСЕЛ С АКТУАЛЬНЫМИ ДАННЫМИ ИЗ БД !!!!!!!!!!!!!!!!!!
+
+        // при нажатии на другой зал собирать новые данные о данном зале для отмена
+        // подстроить новый renderHall под все функции (осталось ручное переключение залов)
 
         // -----------============ меняем CHAIR TYPE
         if(e.target.closest('.conf-step__chair')) {
@@ -80,7 +82,12 @@ export default class ControllAdminPanel {
         // --------------============ сброс внесенных изменений
         if(e.target.closest('.configure-hall__reset')) {
             // нужно сбрасывать не просто к нулю, а к первоначальному значению
-            this.redraw.hall.renderHall(this.initialData.row, this.initialData.amount);
+            this.redraw.hall.renderHall(
+                this.initialData.row, 
+                this.initialData.amount,
+                this.initialData.typePlaces
+            );
+
             this.redraw.hall.renderValues(this.initialData.row, this.initialData.amount);
             
             /** данные были сброшены в первоначальное значение, сохранять нечего */ 
@@ -98,7 +105,20 @@ export default class ControllAdminPanel {
                     typesPlaces : this.newTypePlaces,
                 }
 
-                const resultHall = await this.api.hall.update(data);
+                try {
+                    await this.api.hall.update(data);
+                } catch {
+                    // нужно сбрасывать не просто к нулю, а к первоначальному значению
+                    this.redraw.hall.renderHall(
+                        this.initialData.row, 
+                        this.initialData.amount,
+                        this.initialData.typePlaces
+                    );
+                    this.redraw.hall.renderValues(this.initialData.row, this.initialData.amount);
+                }
+
+                /** данные были сброшены в первоначальное значение, сохранять нечего */ 
+                this.redraw.hall.stateButtonSave('off');
             })()
         }
     }
@@ -114,11 +134,11 @@ export default class ControllAdminPanel {
         // включаем/выключаем кнопку сохранения, если нет мест то и сохранять нет смысла
         if(obj?.places) {
             // формируем места
-            this.redraw.hall.renderHall(obj.rows, obj.places);
+            this.redraw.hall.renderHall(obj.rows, obj.places, null);
 
             this.redraw.hall.stateButtonSave('on');
 
-            // сохраняем изменения о количестве рядом и мест
+            // сохраняем изменения о количестве рядов и мест
             this.newPlaces.row = obj.rows;
             this.newPlaces.amount = obj.places;
 
@@ -156,14 +176,15 @@ export default class ControllAdminPanel {
         const arr = [];
 
         [...this.redraw.hall.hallWrapper.children].forEach(item => {
+            const part = [];
             [...item.children].forEach(place => {
                 const chair_num = +place.dataset.chair_num;
                 const type = place.dataset.place_type;
-
-                arr.push({chair_num, type});
+                part.push({chair_num, type});
             })
+            arr.push(part);
         });
-
+        // console.log(arr)
         return arr;
     }
 

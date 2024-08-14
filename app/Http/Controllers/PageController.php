@@ -44,11 +44,29 @@ class PageController extends Controller
         $user = Auth::user();
         if($user && $user->is_admin) {
             $halls = Hall::get();
-            $places = Places::where('hall_id', $halls[0]->id)->get();
+
+            // группируем кресла по рядам
+            $places = null;
+            if(isset($halls[0]) && $halls[0]->row) {
+                $p = Places::where('hall_id', $halls[0]->id)->get();
+                $counter = 0;
+                if($p) {
+                    $places = [];
+                    for($i = 0; $i < $halls[0]->row; $i += 1) {
+                        $part = [];
+                        for($j = 0; $j < $halls[0]->place; $j += 1) {
+                            $part[] = isset($p[$counter]) ? $p[$counter] : '';
+                            $counter += 1;
+                        }
+
+                        $places[] = $part;
+                    }
+                }
+            }
 
             return view('admin.welcome', [
                 'halls' => $halls,
-                'places' => $places
+                'places' => $places,
             ]);
         }
 

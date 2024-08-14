@@ -82,32 +82,68 @@ class ApiAdminController extends Controller
         $amount_places = $request->amount_places;
         $places = $request->typesPlaces;
 
+        $hallBeforeUpdate = Hall::find($id_hall);
+
         $resultHall = Hall::query()->where('id', $id_hall)->update([
             'row' => $amount_places['row'],
             'place' => $amount_places['amount'],
         ]);
 
-        foreach ($places as $value) {
-            $place = Places::query()->where('chair_num', $value['chair_num'])->where('is_hall_id', $id_hall)->first();
+        $resultPlaces = null;
+        $counterUpdatedChairs = 0; // считаем количество обновлений
+        // если кресел больше чем было до этого, то будут созданы новые кресла
+        // и счетчик обновленных кресел соответственно будет меньше чем всего кресел
+        // если передано кресел меньше (а передаются всегда , все кресла что есть в зале)
+        // то переданные кресла обновлятся, а счетчик будет меньше чем общее количество
+        // кресел в зале (по данным БД), значит нужно их уменьшить (лишние удалить) 
+        foreach ($places as $item) {
+            foreach ($item as $value) {
+                $place = Places::query()->where('chair_num', $value['chair_num'])->where('hall_id', $id_hall)->first();
 
-            if(!$place) {
-                Places::create([
-                    'is_hall_id' => $id_hall,
+                $params = [
+                    'hall_id' => $id_hall,
                     'chair_num' => $value['chair_num'],
                     'type' => $value['type'],
-                ]);
-            } else {
-                Places::query()->where('chair_num', $value['chair_num'])->where('is_hall_id', $id_hall)->update([
-                    'is_hall_id' => $id_hall,
-                    'chair_num' => $value['chair_num'],
-                    'type' => $value['type'],
-                ]);
+                ];
+
+                if(!$place) {
+                    $resultPlaces = Places::create($params);
+                } else {
+                    $resultPlaces = Places::query()
+                        ->where('chair_num', $value['chair_num'])
+                        ->where('hall_id', $id_hall)
+                        ->update($params);
+                    $counterUpdatedChairs += 1;
+                }
+                // если по новым данным кресел меньше в заданном зале чем было
+                // лишние удаляем
+            }
+
+            // описание выше (если присланное количество кресел меньше, значит в зале
+            // теперь кресел меньше) лишние удаляем 
+            if($hallBeforeUpdate->row) {
+                $chairNums = [];
+                foreach($places as $row) { 
+                    foreach ($row as $chair) {
+                        $chairNums[] = $chair['chair_num'];
+                    }
+                }
+
+                $allHallPlaces = Places::where('hall_id', $id_hall)->get();
+                if(count($allHallPlaces) > $counterUpdatedChairs) {
+                    foreach ($allHallPlaces as $item) {
+                        if (!in_array($item->chair_num, $chairNums)) {
+                            Places::where('hall_id', $id_hall)
+                                ->where('chair_num', $item->chair_num)
+                                ->delete();
+                        }
+                    }
+                }
             }
         }
         
-        
-
-        return response()->json(['resultHall' => $places]);
+        $resultUpdate = $resultHall && $resultPlaces;
+        return response()->json(['resultUpdate' => $resultUpdate]);
     }
 
     /**
