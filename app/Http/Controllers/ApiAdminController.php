@@ -30,7 +30,26 @@ class ApiAdminController extends Controller
     public function getDataHall($id) {
         $hall = Hall::where('id', $id)->first(['row', 'place']);
 
-        return response()->json(['response' => $hall]);
+        // группируем кресла по рядам
+        $places = null;
+
+        $arrPlaces = Places::where('hall_id', $id)->get();
+        $counter = 0;
+        if($arrPlaces) {
+            $chairs = [];
+            for($i = 0; $i < $hall->row; $i += 1) {
+                $part = [];
+                for($j = 0; $j < $hall->place; $j += 1) {
+                    $part[] = isset($arrPlaces[$counter]) ? $arrPlaces[$counter] : '';
+                    $counter += 1;
+                }
+
+                $chairs[] = $part;
+            }
+        }
+
+
+        return response()->json(['hall' => $hall, 'chairs' => $chairs]);
     }
 
     /**

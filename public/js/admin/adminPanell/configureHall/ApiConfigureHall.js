@@ -13,8 +13,9 @@ export default class ApiConfigureHall {
                 const response = await fetch(`/get_data_hall/${id}`);
 
                 const result = await response.json();
+                const data = {...result.hall, chairs : result.chairs};
 
-                return result.response;
+                return data;
             } catch (error) {
                 throw new Error( 
                     'Запрос на получение данных зала завершился ошибкой' 
@@ -37,7 +38,7 @@ export default class ApiConfigureHall {
             }) 
 
             const result = await response.json();
-            console.log(result)
+
             return true;
         } catch (error) {
             throw new Error( 

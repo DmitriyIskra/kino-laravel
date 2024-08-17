@@ -78,9 +78,9 @@ export default class RedrawConfigureHall {
         if(rows) {
             for(let i = 0; i < rows; i += 1) {
                 const div = this.createElement('div', ['conf-step__row']);
-                
+               
                 // новый зал первое формирование кресел
-                if(places && !chairs?.length) {
+                if(places && !chairs?.length) {  
                     for(let j = 0; j < places; j += 1) {
                         const span = this.createElement('span', ['conf-step__chair', 'conf-step__chair_standart']);
                         span.dataset.chair_num = counter += 1;

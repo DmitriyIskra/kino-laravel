@@ -6,12 +6,18 @@ export default class ControllAdminPanel {
         this.click = this.click.bind(this);
         this.input = this.input.bind(this);
 
-        // стартовые значения к которым можно сбросить
-        // при нажатии кнопки отмена
+        // стартовые значения конфигурации зала к 
+        // которым можно сбросить при нажатии кнопки отмена
         this.initialData = {
             row : null,
             amount : null,
             typePlaces : [],
+        }
+
+        // стартовые значения стоимости кресла
+        this.initialPrice = {
+            standart : null,
+            vip : null,
         }
 
         // новые данные о количестве мест и рядов
@@ -24,44 +30,43 @@ export default class ControllAdminPanel {
         // новые данные о типах кресел если были изменения
         this.newTypePlaces = [];
 
-        // активная кнопка выбора зала
-        this.activeButtonHall = null;
+        // новые данные о стоимости кресел
+        this.newPrice = {
+            standart : null,
+            vip : null,
+        }
     }
 
     init() {
         this.registerEvents(); 
 
         this.parseInitialData();
-
-        this.parseActiveHall();
     }
 
     registerEvents() {
+        // конфигурация зала
         this.redraw.hall.section.addEventListener('click', this.click);
         this.redraw.hall.section.addEventListener('input', this.input);
+        // конфигурация цен
+        this.redraw.price.section.addEventListener('click', this.click);
+        this.redraw.price.section.addEventListener('input', this.input);
     }
 
-    click(e) {
-        // -----------========= HALL
-        if(e.target.closest('.conf-step__selectors-box')) {
-            const id_hall = +e.target.closest('li').dataset.id_hall;
+    click(e) { 
+        // -----------========= CONFIGURE HALL
+        // -----------============ выбираем зал
+        if(e.target.closest('.conf-step__selectors-hall')) {
+            const id_hall = this.parseActiveHall(this.redraw.hall.hallsButtons);
             (async () => {
                 const result = await this.api.hall.read('hall', id_hall);
-                this.redraw.hall.renderHall(result.row, result.place); // !!!!!!!!!!!!!!!!!
+                this.redraw.hall.renderHall(result.row, result.place, result.chairs); // !!!!!!!!!!!!!!!!!
                 this.redraw.hall.renderValues(result.row, result.place);
 
                 this.parseInitialData();
-
-                this.parseActiveHall();
                 // данные только загружены ничего не менялось кнопку выключаем
                 this.redraw.hall.stateButtonSave('off'); 
             })()
         }
-
-        // !!!!!!!!!!!! ПРИ ПЕРЕКЛЮЧЕНИИ ЗАЛА ОТРИСОВЫВАТЬ ТИПЫ КРЕСЕЛ С АКТУАЛЬНЫМИ ДАННЫМИ ИЗ БД !!!!!!!!!!!!!!!!!!
-
-        // при нажатии на другой зал собирать новые данные о данном зале для отмена
-        // подстроить новый renderHall под все функции (осталось ручное переключение залов)
 
         // -----------============ меняем CHAIR TYPE
         if(e.target.closest('.conf-step__chair')) {
@@ -96,7 +101,7 @@ export default class ControllAdminPanel {
 
         // --------------============ Сохраняем изменения на сервер
         if(e.target.closest('.configure-hall__accent')) {
-            const id_hall = +this.activeButtonHall.dataset.id_hall;
+            const id_hall = this.parseActiveHall(this.redraw.hall.hallsButtons);
 
             (async () => {
                 const data = {
@@ -121,9 +126,55 @@ export default class ControllAdminPanel {
                 this.redraw.hall.stateButtonSave('off');
             })()
         }
+
+        // -----------========= CONFIGURE PRICE
+        // сохранение
+        // отрисовка при загрузке страницы
+        // отрисовка при выборе другого зала
+        // --------------============ выбираем зал
+        if(e.target.closest('.conf-step__selectors-price')) {
+
+        }
+
+        // --------------============ сброс внесенных изменений
+        if(e.target.closest('.configure-price__reset')) {
+            this.redraw.price.renderValues(this.initialPrice.standart, this.initialPrice.vip);
+            
+            /** данные были сброшены в первоначальное значение, сохранять нечего */ 
+            this.redraw.hall.stateButtonSave('off');
+        }
+
+        // --------------============ Сохраняем изменения на сервер
+        if(e.target.closest('.configure-price__accent')) {
+            const id_hall = this.parseActiveHall(this.redraw.price.hallsButtons);;
+
+            // (async () => {
+            //     const data = {
+            //         id_hall,
+            //         amount_places : this.newPlaces,
+            //         typesPlaces : this.newTypePlaces,
+            //     }
+
+            //     try {
+            //         await this.api.hall.update(data);
+            //     } catch {
+            //         // нужно сбрасывать не просто к нулю, а к первоначальному значению
+            //         this.redraw.hall.renderHall(
+            //             this.initialData.row, 
+            //             this.initialData.amount,
+            //             this.initialData.typePlaces
+            //         );
+            //         this.redraw.hall.renderValues(this.initialData.row, this.initialData.amount);
+            //     }
+
+            //     /** данные были сброшены в первоначальное значение, сохранять нечего */ 
+            //     this.redraw.hall.stateButtonSave('off');
+            // })()
+        }
     }
 
     input(e) {
+        // -----------========= HALL
         let obj = null;
 
         if(e.target.closest('.conf-step__input-row') 
@@ -148,11 +199,35 @@ export default class ControllAdminPanel {
         if(!obj?.rows || !obj?.places) {
             this.redraw.hall.stateButtonSave('off');
         }
+
+        // -----------========= PRICE
+        let objPrices = null;
+
+        if(e.target.closest('.conf-step__input-standart') 
+        || e.target.closest('.conf-step__input-vip')) {
+            objPrices = this.parsePrice();
+        }
+
+        // включаемкнопку сохранения, если нет цен то и сохранять нечего
+        if(objPrices?.standart || objPrices?.vip) {
+            this.redraw.price.stateButtonSave('on');
+
+            // сохраняем изменения о количестве рядов и мест
+            this.newPrice.standart = objPrices.standart;
+            this.newPrice.vip = objPrices.vip;
+        } 
+        // выключаем кнопку сохранения
+        if(!objPrices?.standart && !objPrices?.vip) {
+            this.redraw.hall.stateButtonSave('off');
+        }
+
+
     }
 
     // сохраняем стартовые значения для кнопки отмена
     // и возвращению к первоначальному состоянию
     parseInitialData() {
+        // данные конфигурации зала (кресел)
         const rows = this.redraw.hall.row.value;
         const places = this.redraw.hall.place.value;
 
@@ -167,6 +242,10 @@ export default class ControllAdminPanel {
             this.initialData.amount = null;
             this.initialData.typePlaces = [];
         }
+
+        // данные конфигурации цен
+        this.initialPrice.standart = +this.redraw.price.standart.value || null;
+        this.initialPrice.vip = +this.redraw.price.vip.value || null;
     }
 
     /** Собирает и возвращает массив объектов {id, type} */
@@ -194,14 +273,52 @@ export default class ControllAdminPanel {
         const rows = +this.redraw.hall.row.value || 0;
         const places = +this.redraw.hall.place.value || 0;
 
+        this.validateInput([
+            {
+                val : rows,
+                input : this.redraw.hall.row,
+            }, {
+                val : places,
+                input : this.redraw.hall.place,
+            }
+        ]);
+
         return {rows, places};
     }
 
-    // поиск активного зала
-    parseActiveHall() {
-        if(this.redraw.hall.hallsButtons.length) {
-            this.activeButtonHall = [...this.redraw.hall.hallsButtons]
+    // сбор цен из input (ввод только цифр) (мини валидация)
+    parsePrice() {
+        let standart = +this.redraw.price.standart.value || null;
+        let vip = +this.redraw.price.vip.value || null;
+
+        this.validateInput([
+            {
+                val : standart,
+                input : this.redraw.price.standart,
+            }, {
+                val : vip,
+                input : this.redraw.price.vip,
+            }
+        ]);
+
+        if(standart || vip) return {standart, vip};
+    }
+
+    // если вводят не цифры, очищаем ввод (не даем вводить не цифры)
+    validateInput(data) {
+        data.forEach(item => {
+            if(!item.val) item.input.value = '';
+        })
+    }
+
+    // поиск активного зала конфигурации зала
+    parseActiveHall(selectors) {
+        let activeButtonHall = null;
+        if(selectors && selectors.length) {
+            activeButtonHall = [...selectors] 
                 .find(item => item.checked);
         }
+
+        return +activeButtonHall.dataset.id_hall;
     }
 }

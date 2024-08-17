@@ -54,7 +54,7 @@
       <div class="conf-step__wrapper">
 
         <p class="conf-step__paragraph">Выберите зал для конфигурации:</p>
-        <ul class="conf-step__selectors-box">
+        <ul class="conf-step__selectors-box conf-step__selectors-hall">
           @if (count($halls))
               @foreach ($halls as $key => $item)
                 <li data-id_hall="{{ $item->id }}">
@@ -137,30 +137,65 @@
       </div>
     </section>
     
-    <section class="conf-step">
+    <section class="configure-price conf-step conf-step__configure-price">
       <header class="conf-step__header conf-step__header_opened">
         <h2 class="conf-step__title">Конфигурация цен</h2>
       </header>
       <div class="conf-step__wrapper">
         <p class="conf-step__paragraph">Выберите зал для конфигурации:</p>
-        <ul class="conf-step__selectors-box">
-          <li><input type="radio" class="conf-step__radio" name="prices-hall" value="Зал 1"><span class="conf-step__selector">Зал 1</span></li>
-          <li><input type="radio" class="conf-step__radio" name="prices-hall" value="Зал 2" checked><span class="conf-step__selector">Зал 2</span></li>
+        <ul class="conf-step__selectors-box conf-step__selectors-price">
+          @if (count($halls))
+              @foreach ($halls as $key => $item)
+                <li data-id_hall="{{ $item->id }}">
+                  <input 
+                    type="radio" 
+                    class="conf-step__radio" 
+                    name="prices-hall" 
+                    value="Зал {{ $item->id }}" 
+                    data-id_hall="{{ $item->id }}"
+                    @if ($key === 0)
+                        checked
+                    @endif 
+                  >
+                  <span class="conf-step__selector">Зал {{ $item->id }}</span>
+                </li>
+              @endforeach
+          @else
+              <li>Доступных залов нет.</li>
+          @endif
         </ul>
           
         <p class="conf-step__paragraph">Установите цены для типов кресел:</p>
           <div class="conf-step__legend">
-            <label class="conf-step__label">Цена, рублей<input type="text" class="conf-step__input" placeholder="0" ></label>
-            за <span class="conf-step__chair conf-step__chair_standart"></span> обычные кресла
+            <label class="conf-step__label">Цена, рублей
+              <input 
+                type="text" 
+                class="conf-step__input conf-step__input-standart" 
+                placeholder="0"
+                @if(isset($halls[0])) value="{{ $halls[0]->price_standart ?? '' }}" @endif 
+                @if (!isset($halls[0])) disabled @endif 
+              >
+            </label>
+            за 
+            <span class="conf-step__chair conf-step__chair_standart"></span> обычные кресла
           </div>  
           <div class="conf-step__legend">
-            <label class="conf-step__label">Цена, рублей<input type="text" class="conf-step__input" placeholder="0" value="350"></label>
-            за <span class="conf-step__chair conf-step__chair_vip"></span> VIP кресла
+            <label class="conf-step__label">Цена, рублей
+              <input 
+                type="text" 
+                class="conf-step__input conf-step__input-vip" 
+                placeholder="0"
+                @if(isset($halls[0])) value="{{ $halls[0]->price_vip ?? '' }}" @endif 
+                @if (!isset($halls[0])) disabled @endif 
+              >
+            </label>
+            за 
+            <span class="conf-step__chair conf-step__chair_vip"></span> VIP кресла
           </div>  
         
         <fieldset class="conf-step__buttons text-center">
-          <button class="conf-step__button conf-step__button-regular">Отмена</button>
-          <input type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent">
+          <button class="conf-step__button conf-step__button-regular configure-price__reset">Отмена</button>
+          <input class="conf-step__button conf-step__button-accent configure-price__accent conf-step__button-accent_disabled" type="submit" value="Сохранить" >
         </fieldset>  
       </div>
     </section>
