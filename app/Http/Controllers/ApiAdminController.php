@@ -27,7 +27,10 @@ class ApiAdminController extends Controller
         return to_route('admin_login');
     }
 
-    public function getDataHall($id) {
+    /**
+     * Получение данных о местах и их количестве и рядах.
+     */
+    public function get_data_hall($id) {
         $hall = Hall::where('id', $id)->first(['row', 'place']);
 
         // группируем кресла по рядам
@@ -53,15 +56,23 @@ class ApiAdminController extends Controller
     }
 
     /**
+     * Получение цен.
+     */
+    public function get_prices($id) {
+        $result = Hall::where('id', $id)->first(['price_standart', 'price_vip']);
+
+        return response()->json($result);
+    }
+    /**
      * Создать и удалить зал.
      */
-    public function createHall()
+    public function create_hall()
     {   
         $result = Hall::query()->create();
 
         return to_route('admin_welcome');
     }
-    public function deleteHall($id)
+    public function delete_hall($id)
     {
         $result = Hall::query()->where('id', $id)->delete();
 
@@ -93,9 +104,9 @@ class ApiAdminController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Обновление конфигурации зала.
      */
-    public function update(Request $request)
+    public function update_hall_configure(Request $request)
     {
         $id_hall = $request->id_hall;
         $amount_places = $request->amount_places;
@@ -163,6 +174,21 @@ class ApiAdminController extends Controller
         
         $resultUpdate = $resultHall && $resultPlaces;
         return response()->json(['resultUpdate' => $resultUpdate]);
+    }
+
+    public function update_hall_price(Request $request)
+    {
+        $price_places = $request->price_places;
+
+        $result = Hall::where('id', $request->id_hall)
+            ->update([
+                'price_standart' => $price_places['standart'],
+                'price_vip' => $price_places['vip'],
+            ]);
+
+        if($result) return response()->json(['response' => true]);
+        
+        return response()->json(['response' => false]);
     }
 
     /**

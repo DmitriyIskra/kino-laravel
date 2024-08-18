@@ -40,7 +40,8 @@ export default class ControllAdminPanel {
     init() {
         this.registerEvents(); 
 
-        this.parseInitialData();
+        this.parseInitialData('places');
+        this.parseInitialData('prices');
     }
 
     registerEvents() {
@@ -62,7 +63,7 @@ export default class ControllAdminPanel {
                 this.redraw.hall.renderHall(result.row, result.place, result.chairs); // !!!!!!!!!!!!!!!!!
                 this.redraw.hall.renderValues(result.row, result.place);
 
-                this.parseInitialData();
+                this.parseInitialData('places');
                 // данные только загружены ничего не менялось кнопку выключаем
                 this.redraw.hall.stateButtonSave('off'); 
             })()
@@ -128,12 +129,18 @@ export default class ControllAdminPanel {
         }
 
         // -----------========= CONFIGURE PRICE
-        // сохранение
-        // отрисовка при загрузке страницы
-        // отрисовка при выборе другого зала
         // --------------============ выбираем зал
         if(e.target.closest('.conf-step__selectors-price')) {
+            const id_hall = this.parseActiveHall(this.redraw.price.hallsButtons);
+            (async () => {
+                const result = await this.api.price.read(id_hall);
+                console.log(result)
+                this.redraw.price.renderValues(result.price_standart, result.price_vip);
 
+                this.parseInitialData('prices');
+                // данные только загружены ничего не менялось кнопку выключаем
+                this.redraw.hall.stateButtonSave('off'); 
+            })()
         }
 
         // --------------============ сброс внесенных изменений
@@ -148,28 +155,24 @@ export default class ControllAdminPanel {
         if(e.target.closest('.configure-price__accent')) {
             const id_hall = this.parseActiveHall(this.redraw.price.hallsButtons);;
 
-            // (async () => {
-            //     const data = {
-            //         id_hall,
-            //         amount_places : this.newPlaces,
-            //         typesPlaces : this.newTypePlaces,
-            //     }
+            (async () => {
+                const data = {
+                    id_hall,
+                    price_places : this.newPrice,
+                }
 
-            //     try {
-            //         await this.api.hall.update(data);
-            //     } catch {
-            //         // нужно сбрасывать не просто к нулю, а к первоначальному значению
-            //         this.redraw.hall.renderHall(
-            //             this.initialData.row, 
-            //             this.initialData.amount,
-            //             this.initialData.typePlaces
-            //         );
-            //         this.redraw.hall.renderValues(this.initialData.row, this.initialData.amount);
-            //     }
+                try {
+                    await this.api.price.update(data);
+                } catch {
+                    // нужно сбрасывать не просто к нулю, а к первоначальному значению
+                    this.redraw.price.renderValues(
+                        this.initialPrice.standart, this.initialPrice.vip
+                    );
+                }
 
-            //     /** данные были сброшены в первоначальное значение, сохранять нечего */ 
-            //     this.redraw.hall.stateButtonSave('off');
-            // })()
+                /** данные были сброшены в первоначальное значение, сохранять нечего */ 
+                this.redraw.price.stateButtonSave('off');
+            })()
         }
     }
 
@@ -226,26 +229,30 @@ export default class ControllAdminPanel {
 
     // сохраняем стартовые значения для кнопки отмена
     // и возвращению к первоначальному состоянию
-    parseInitialData() {
-        // данные конфигурации зала (кресел)
-        const rows = this.redraw.hall.row.value;
-        const places = this.redraw.hall.place.value;
-
-        if(rows && places) {
-            const arr = this.parseTypePlaces();
-
-            this.initialData.row = rows;
-            this.initialData.amount = places;
-            this.initialData.typePlaces = [...arr];
-        } else {
-            this.initialData.row = null;
-            this.initialData.amount = null;
-            this.initialData.typePlaces = [];
+    parseInitialData(action) {
+        if(action === 'places') {
+            // данные конфигурации зала (кресел)
+            const rows = this.redraw.hall.row.value;
+            const places = this.redraw.hall.place.value;
+    
+            if(rows && places) {
+                const arr = this.parseTypePlaces();
+    
+                this.initialData.row = rows;
+                this.initialData.amount = places;
+                this.initialData.typePlaces = [...arr];
+            } else {
+                this.initialData.row = null;
+                this.initialData.amount = null;
+                this.initialData.typePlaces = [];
+            }
         }
 
-        // данные конфигурации цен
-        this.initialPrice.standart = +this.redraw.price.standart.value || null;
-        this.initialPrice.vip = +this.redraw.price.vip.value || null;
+        if(action === 'prices') {
+            // данные конфигурации цен
+            this.initialPrice.standart = +this.redraw.price.standart.value || null;
+            this.initialPrice.vip = +this.redraw.price.vip.value || null;
+        }
     }
 
     /** Собирает и возвращает массив объектов {id, type} */

@@ -17,14 +17,18 @@ Route::get('/admin', [PageController::class, 'admin_page'])->name('admin_welcome
 Route::post('/login', [ApiAdminController::class, 'index']);
 
 // создать или удалить зал
-Route::get('/create_hall', [ApiAdminController::class, 'createHall']);
-Route::get('/delete-hall/{id}', [ApiAdminController::class, 'deleteHall']);
+Route::get('/create_hall', [ApiAdminController::class, 'create_hall']);
+Route::get('/delete-hall/{id}', [ApiAdminController::class, 'delete_hall']);
 
 // получить данные о зале и местах???????????????????
-Route::get('/get_data_hall/{id}', [ApiAdminController::class, 'getDataHall']);
+Route::get('/get_data_hall/{id}', [ApiAdminController::class, 'get_data_hall']);
 
 // сохранить/обновить данные о зале и местах
-Route::post('/update_hall_places', [ApiAdminController::class, 'update']);
+Route::post('/update_hall_places', [ApiAdminController::class, 'update_hall_configure']);
 
+// обновить данные о ценах
+Route::post('/update_hall_price', [ApiAdminController::class, 'update_hall_price']);
 
+// получение данных о ценах
+Route::get('/get_price/{id}', [ApiAdminController::class, 'get_prices']);
  
