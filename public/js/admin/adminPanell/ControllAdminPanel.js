@@ -51,6 +51,8 @@ export default class ControllAdminPanel {
         // конфигурация цен
         this.redraw.price.section.addEventListener('click', this.click);
         this.redraw.price.section.addEventListener('input', this.input);
+        // сетка сеансов
+        this.redraw.session.section.addEventListener('click', this.click);
     }
 
     click(e) { 
@@ -174,6 +176,20 @@ export default class ControllAdminPanel {
                 this.redraw.price.stateButtonSave('off');
             })()
         }
+
+        // -----------========= SESSION GRID
+        // подвязать в миграциях сеансы к залу, если удаляем зал то и сеансов в нем не будет
+        // сначала добавляем фильм, без фильма сеанс не возможен и без зала сеанс не возможен
+        // для добавления фильма нужна модалка
+
+        // для добавления сеанса нужна модалка
+        if(e.target.closest('.conf-step__add-film')) {
+            this.redraw.session.showAddFilm();
+        }
+
+        if(e.target.closest('.add-film__reset')) {
+            this.redraw.session.hideAddFilm();
+        }
     }
 
     input(e) {
@@ -223,9 +239,12 @@ export default class ControllAdminPanel {
         if(!objPrices?.standart && !objPrices?.vip) {
             this.redraw.hall.stateButtonSave('off');
         }
-
-
     }
+
+    // submit(e) { !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // e.preventDefault();
+        // сабмит не нужен, ДОПИСАТЬ СОХРАНЕНИЕ
+    // }
 
     // сохраняем стартовые значения для кнопки отмена
     // и возвращению к первоначальному состоянию

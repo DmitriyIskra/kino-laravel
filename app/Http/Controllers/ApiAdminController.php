@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Hall;
 use App\Models\Places;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ApiAdminController extends Controller
 {
@@ -77,6 +78,25 @@ class ApiAdminController extends Controller
         $result = Hall::query()->where('id', $id)->delete();
 
         return to_route('admin_welcome');
+    }
+
+
+    /**
+     * Сохраняем фильм.
+     */
+    public function save_film(Request $request)
+    {
+        $file = $request->poster;
+
+        $nameOrigin = $file->getClientOriginalName();
+        $extension = $file->extension();
+        $hashName = $file->hashName();
+        $name = preg_replace("/\.$extension/i", '', $nameOrigin);
+
+        Storage::put("/films/$name", $file);
+
+        $url = Storage::url("/films/$name/$hashName");
+        dd($url);
     }
 
     /**

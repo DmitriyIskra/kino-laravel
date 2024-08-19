@@ -206,6 +206,10 @@ select {
   display: none;
 }
 
+.conf-step__session-grid {
+  position: relative;
+}
+
 .conf-step__paragraph {
   font-size: 1.6rem;
   font-weight: 400;

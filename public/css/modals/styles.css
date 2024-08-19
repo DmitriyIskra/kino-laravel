@@ -1,0 +1,53 @@
+.wrapper-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: none;
+    padding: 3vw;
+
+    background-color: #E0DFE1;
+    border: 2px solid #63536C;
+
+    translate: -50% -50%;
+}
+
+.wrapper-modal_active {
+    display: block;
+}
+
+.add-film__form {
+    display: flex;
+    gap: 1vw;
+
+    flex-direction: column;
+}
+
+.add-film__label {
+    display: flex;
+    gap: 0.15vw;
+
+    font-size: 1.2rem;
+    color: #848484;
+
+    flex-direction: column;
+}
+
+.add-film__input {
+    height: 30px;
+    padding-left: 7px;
+}
+
+.add-film__textarea {
+    max-height: 82px;
+    min-height: 82px;
+    max-width: 287px;
+    min-width: 287px;
+    padding: 7px;
+
+    resize: none;
+}
+
+.add-film__reset {
+    cursor: pointer;
+}

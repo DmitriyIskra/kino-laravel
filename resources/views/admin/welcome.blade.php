@@ -9,6 +9,7 @@
   <title>ИдёмВКино</title>
   <link rel="stylesheet" href="css/admin/normalize.css">
   <link rel="stylesheet" href="css/admin/styles.css">
+  <link rel="stylesheet" href="css/modals/styles.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&amp;subset=cyrillic,cyrillic-ext,latin-ext" rel="stylesheet">
   <script src="js/admin/accordeon.js" deffer></script>
   <script src="js/admin/app.js" type="module" deffer></script>
@@ -200,13 +201,13 @@
       </div>
     </section>
     
-    <section class="conf-step">
+    <section class="conf-step conf-step__session-grid">
       <header class="conf-step__header conf-step__header_opened">
         <h2 class="conf-step__title">Сетка сеансов</h2>
       </header>
       <div class="conf-step__wrapper">
         <p class="conf-step__paragraph">
-          <button class="conf-step__button conf-step__button-accent">Добавить фильм</button>
+          <button class="conf-step__button conf-step__button-accent conf-step__add-film">Добавить фильм</button>
         </p>
         <div class="conf-step__movies">
           <div class="conf-step__movie">
@@ -278,6 +279,8 @@
           <input type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent">
         </fieldset>  
       </div>
+
+      @include('../components/__modal-add-film')
     </section>
     
     <section class="conf-step">
