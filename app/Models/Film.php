@@ -10,6 +10,7 @@ class Film extends Model
     use HasFactory;
 
     protected $fillable = [
+        'is_active',
         'poster',
         'title',
         'description',

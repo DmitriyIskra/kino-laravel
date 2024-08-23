@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('duration')->nullable();
             $table->string('country')->nullable();
-            $table->json('is_halls_id');
+            $table->json('is_halls_id')->nullable();
 
             $table->timestamps();
         });

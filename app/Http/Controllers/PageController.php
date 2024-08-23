@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Film;
 use App\Models\Hall;
 use App\Models\Places;
 use App\Models\User;
@@ -46,6 +47,10 @@ class PageController extends Controller
             $halls = Hall::get();
 
             // группируем кресла по рядам
+            // [
+                // ряд: [кресло, кресло, кресло,]
+                // ряд: [кресло, кресло, кресло,]
+            // ]
             $places = null;
             if(isset($halls[0]) && $halls[0]->row) {
                 $p = Places::where('hall_id', $halls[0]->id)->get();
@@ -64,9 +69,12 @@ class PageController extends Controller
                 }
             }
 
+            $films = Film::get();
+
             return view('admin.welcome', [
                 'halls' => $halls,
                 'places' => $places,
+                'films' => $films,
             ]);
         }
 

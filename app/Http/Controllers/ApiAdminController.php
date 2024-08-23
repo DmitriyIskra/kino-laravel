@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Film;
 use App\Models\Hall;
 use App\Models\Places;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ApiAdminController extends Controller
@@ -93,10 +95,19 @@ class ApiAdminController extends Controller
         $hashName = $file->hashName();
         $name = preg_replace("/\.$extension/i", '', $nameOrigin);
 
-        Storage::put("/films/$name", $file);
+        Storage::put("img/films/$name", $file);
 
-        $url = Storage::url("/films/$name/$hashName");
-        dd($url);
+        $url = asset("img/films/$name/$hashName");
+
+        Film::query()->create([
+            'poster' => $url,
+            'title' => $request->title,
+            'description' => $request->description,
+            'duration' => $request ->duration,
+            'country' => $request ->country,
+        ]);
+
+        return to_route('admin_welcome');
     }
 
     /**
