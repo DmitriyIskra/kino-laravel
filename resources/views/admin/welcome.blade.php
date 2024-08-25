@@ -32,7 +32,7 @@
         <ul class="conf-step__list">
           @if (count($halls))
               @foreach ($halls as $item)
-              <li>Зал {{ $item->id }}
+              <li>Зал {{ $item->number }}
                 <a 
                   class="conf-step__button conf-step__button-trash conf-step__button-trash-hall"
                   href="/delete-hall/{{ $item->id }}"
@@ -63,13 +63,13 @@
                     type="radio" 
                     class="conf-step__radio" 
                     name="chairs-hall" 
-                    value="Зал {{ $item->id }}" 
+                    value="Зал {{ $item->number }}" 
                     data-id_hall="{{ $item->id }}"
                     @if ($key === 0)
                         checked
                     @endif 
                   >
-                  <span class="conf-step__selector">Зал {{ $item->id }}</span>
+                  <span class="conf-step__selector">Зал {{ $item->number }}</span>
                 </li>
               @endforeach
           @else
@@ -152,13 +152,13 @@
                     type="radio" 
                     class="conf-step__radio" 
                     name="prices-hall" 
-                    value="Зал {{ $item->id }}" 
+                    value="Зал {{ $item->number }}" 
                     data-id_hall="{{ $item->id }}"
                     @if ($key === 0)
                         checked
                     @endif 
                   >
-                  <span class="conf-step__selector">Зал {{ $item->id }}</span>
+                  <span class="conf-step__selector">Зал {{ $item->number }}</span>
                 </li>
               @endforeach
           @else
@@ -212,18 +212,31 @@
         <div class="conf-step__movies">
           @if ($films)
               @foreach ($films as $item)
-                @if ($item->is_active)
-                  <div class="conf-step__movie">
+
+                  <div class="conf-step__movie" data-id_movie="{{ $item->id }}">
                     <img class="conf-step__movie-poster" alt="poster" src="{{ $item->poster }}">
                     <h3 class="conf-step__movie-title">{{ $item->title }}</h3>
                     <p class="conf-step__movie-duration">{{ $item->duration }} минут</p>
                   </div>
-                @endif
+
               @endforeach
           @endif         
         </div>
         
         <div class="conf-step__seances">
+
+          @if (count($halls))
+            @foreach ($halls as $item)
+                <div class="conf-step__seances-hall">
+                  <h3 class="conf-step__seances-title">Зал {{$item->number}}</h3>
+                  <div class="conf-step__seances-timeline" data-id_hall="{{ $item->id }}">
+
+                  </div>
+                </div>
+            @endforeach
+          @else
+            <P>Ни один зал не создан</P>
+          @endif
           <div class="conf-step__seances-hall">
             <h3 class="conf-step__seances-title">Зал 1</h3>
             <div class="conf-step__seances-timeline">
@@ -258,11 +271,12 @@
         
         <fieldset class="conf-step__buttons text-center">
           <button class="conf-step__button conf-step__button-regular">Отмена</button>
-          <input type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent">
+          <input type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent conf-step__seances-submit">
         </fieldset>  
       </div>
 
       @include('../components/__modal-add-film')
+      @include('../components/__modal-add-session')
     </section>
     
     <section class="conf-step">

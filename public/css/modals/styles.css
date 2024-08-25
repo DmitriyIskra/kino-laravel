@@ -16,29 +16,58 @@
     display: block;
 }
 
-.add-film__form {
+.add-film-sess__form {
     display: flex;
     gap: 1vw;
 
     flex-direction: column;
 }
 
-.add-film__label {
+.add-film-sess__label {
     display: flex;
     gap: 0.15vw;
 
     font-size: 1.2rem;
+    
     color: #848484;
-
+ 
     flex-direction: column;
 }
 
-.add-film__input {
+.add-sess__start-film p {
+    margin-bottom: 0.15vw;
+
+    font-size: 1.2rem;
+    
+    color: #848484;
+}
+
+.add-sess__label section {
+    width: 10%;
+}
+
+.add-sess__wr-inputs {
+    display: flex;
+}
+
+.add-sess__label {
+    width: 25%;
+
+    font-size: 1.2rem;
+    
+    color: #848484;
+}
+
+.add-film-sess__input {
     height: 30px;
     padding-left: 7px;
 }
 
-.add-film__textarea {
+.add-sess__input {
+    width: 40%;
+}
+
+.add-film-sess__textarea {
     max-height: 82px;
     min-height: 82px;
     max-width: 287px;
@@ -48,6 +77,6 @@
     resize: none;
 }
 
-.add-film__reset {
+.add-film-sess__reset {
     cursor: pointer;
 }

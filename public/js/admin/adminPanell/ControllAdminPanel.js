@@ -5,6 +5,7 @@ export default class ControllAdminPanel {
 
         this.click = this.click.bind(this);
         this.input = this.input.bind(this);
+        this.submit = this.submit.bind(this);
 
         // стартовые значения конфигурации зала к 
         // которым можно сбросить при нажатии кнопки отмена
@@ -35,6 +36,12 @@ export default class ControllAdminPanel {
             standart : null,
             vip : null,
         }
+        
+        // свеже добавленные фильмы???
+        this.newFilms = [];
+
+        // активный зал для добавления сессии
+        this.activeHallForSession = null;
     }
 
     init() {
@@ -53,6 +60,8 @@ export default class ControllAdminPanel {
         this.redraw.price.section.addEventListener('input', this.input);
         // сетка сеансов
         this.redraw.session.section.addEventListener('click', this.click);
+        this.redraw.session.addFilmModal.addEventListener('submit', this.submit);
+        this.redraw.session.addSessionModal.addEventListener('submit', this.submit);
     }
 
     click(e) { 
@@ -136,7 +145,7 @@ export default class ControllAdminPanel {
             const id_hall = this.parseActiveHall(this.redraw.price.hallsButtons);
             (async () => {
                 const result = await this.api.price.read(id_hall);
-                console.log(result)
+                
                 this.redraw.price.renderValues(result.price_standart, result.price_vip);
 
                 this.parseInitialData('prices');
@@ -182,14 +191,35 @@ export default class ControllAdminPanel {
         // сначала добавляем фильм, без фильма сеанс не возможен и без зала сеанс не возможен
         // для добавления фильма нужна модалка
 
-        // для добавления сеанса нужна модалка
+        // модалка для добавления фильма показ
         if(e.target.closest('.conf-step__add-film')) {
             this.redraw.session.showAddFilm();
         }
-
+        // закрытие
         if(e.target.closest('.add-film__reset')) {
             this.redraw.session.hideAddFilm();
         }
+
+        // модалка для добавления сеанса показ
+        if(e.target.closest('.conf-step__seances-timeline')) {
+            const target = e.target.closest('.conf-step__seances-timeline')
+            this.activeHallForSession = +target.dataset.id_hall;
+            this.redraw.session.showAddSession();
+        }
+        // закрытие
+        if(e.target.closest('.add-sess__reset')) {
+            this.redraw.session.hideAddSession();
+        }
+
+        // сохраняем все данные фильм и сеансы по кнопке сохранить
+        if(e.target.closest('.conf-step__seances-submit')) {
+            
+            // очищаем данные о вновь добавленных фильмах
+            // до нажатия сохранить
+            this.newFilms.length = 0;
+        }
+
+        // удаляем добавленые фильмы и сеансы по кнопке отмена
     }
 
     input(e) {
@@ -241,11 +271,31 @@ export default class ControllAdminPanel {
         }
     }
 
-    // submit(e) { !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // e.preventDefault();
-        // сабмит не нужен, ДОПИСАТЬ СОХРАНЕНИЕ
-    // }
+    submit(e) {
+        e.preventDefault();
+        
+        if(e.target.closest('.add-film__form')) {
+            const formData = new FormData(e.target); 
+            (async () => {
+                const result = await this.api.session.saveFilm(formData);
 
+                this.redraw.session.renderFilm(result);
+                this.newFilms.push(result.id); // сохраняем на случай нажатия кнопки отмена до сохранения
+
+                this.redraw.session.hideAddFilm(); 
+                e.target.reset();       
+            })();
+        }
+
+        if(e.target.closest('.add-sess__form')) {
+            this.activeHallForSession;
+
+            const formData = new FormData(e.target);
+            formData.append('id_hall', this.activeHallForSession);
+            console.log(Array.from(formData));
+        }
+    }
+ 
     // сохраняем стартовые значения для кнопки отмена
     // и возвращению к первоначальному состоянию
     parseInitialData(action) {

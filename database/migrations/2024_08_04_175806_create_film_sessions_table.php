@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('film_sessions', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('is_film_id')->nullable();
-            $table->integer('free_places');
-            $table->timestamp('time_from');
+            $table->bigInteger('film_id')->unsigned();
+            $table->foreign('film_id')->references('id')->on('films')->onDelete('cascade');
+            $table->integer('hall_id')->nullable();
+            $table->timestamp('start__h')->nullable();
+            $table->timestamp('start__m')->nullable();
+            $table->integer('duration')->nullable();
 
             $table->timestamps();
         });

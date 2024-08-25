@@ -69,9 +69,16 @@ class ApiAdminController extends Controller
     /**
      * Создать и удалить зал.
      */
-    public function create_hall()
+    public function create_hall() 
     {   
-        $result = Hall::query()->create();
+        $oldest = Hall::query()->latest()->first();
+        if($oldest) {
+            $num = $oldest->number;
+            $result = Hall::query()->create(['number' => ++$num]);
+        } else {
+            $result = Hall::query()->create(['number' => 1]);
+        }
+        
 
         return to_route('admin_welcome');
     }
@@ -99,15 +106,40 @@ class ApiAdminController extends Controller
 
         $url = asset("img/films/$name/$hashName");
 
-        Film::query()->create([
+        $result = Film::query()->create([
             'poster' => $url,
             'title' => $request->title,
             'description' => $request->description,
             'duration' => $request ->duration,
             'country' => $request ->country,
         ]);
+        Log::info($result);
+        
+        if($result) {
+            return response()->json([
+                'result' => true,
+                'body' => [
+                    'id' => $result->id,
+                    'title' => $result->title,
+                    'duration' => $result->duration.' минут',
+                    'poster' => $result->poster,
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'result' => false,
+                'body' => 'movie not saved',
+            ]);
+        }
 
-        return to_route('admin_welcome');
+    }
+
+    /**
+     * Сохраняем сессию.
+     */
+    public function save_session_film(Request $request) 
+    {
+        // продолжительность добавлять уже здесь, от фильма 
     }
 
     /**

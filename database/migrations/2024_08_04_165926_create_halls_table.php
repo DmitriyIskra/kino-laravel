@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('halls', function (Blueprint $table) {
             $table->id();
+            $table->integer('number')->nullable();
             $table->integer('row')->nullable();
             $table->integer('place')->nullable();
             $table->decimal('price_standart')->nullable();

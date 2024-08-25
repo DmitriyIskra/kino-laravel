@@ -14,7 +14,7 @@ Route::get('/ticket', [PageController::class, 'ticket_page'])->name('client_tick
 Route::get('/login', [PageController::class, 'login_page'])->name('admin_login');
 Route::get('/admin', [PageController::class, 'admin_page'])->name('admin_welcome');
 
-Route::post('/login', [ApiAdminController::class, 'index']);
+Route::post('/login', [ApiAdminController::class, 'index']); 
 
 // создать или удалить зал
 Route::get('/create_hall', [ApiAdminController::class, 'create_hall']);
@@ -34,4 +34,7 @@ Route::get('/get_price/{id}', [ApiAdminController::class, 'get_prices']);
 
 // сохраняем фильм
 Route::post('/save_film', [ApiAdminController::class, 'save_film']);
+
+// сохраняем сеанс
+Route::post('/save_session', [ApiAdminController::class, 'save_session_film']);
  

@@ -10,6 +10,7 @@ class Hall extends Model
     use HasFactory;
 
     protected $fillable = [
+        'number',
         'row',
         'place',
         'price_standart',
