@@ -37,9 +37,6 @@ export default class ControllAdminPanel {
             vip : null,
         }
         
-        // свеже добавленные фильмы???
-        this.newFilms = [];
-
         // активный зал для добавления сессии
         this.activeHallForSession = null;
     }
@@ -211,14 +208,6 @@ export default class ControllAdminPanel {
             this.redraw.session.hideAddSession();
         }
 
-        // сохраняем все данные фильм и сеансы по кнопке сохранить
-        if(e.target.closest('.conf-step__seances-submit')) {
-            
-            // очищаем данные о вновь добавленных фильмах
-            // до нажатия сохранить
-            this.newFilms.length = 0;
-        }
-
         // удаляем добавленые фильмы и сеансы по кнопке отмена
     }
 
@@ -280,7 +269,6 @@ export default class ControllAdminPanel {
                 const result = await this.api.session.saveFilm(formData);
 
                 this.redraw.session.renderFilm(result);
-                this.newFilms.push(result.id); // сохраняем на случай нажатия кнопки отмена до сохранения
 
                 this.redraw.session.hideAddFilm(); 
                 e.target.reset();       
@@ -290,14 +278,19 @@ export default class ControllAdminPanel {
         if(e.target.closest('.add-sess__form')) {
             this.activeHallForSession;
 
-            const formData = new FormData(e.target);
-            formData.append('id_hall', this.activeHallForSession);
-            console.log(Array.from(formData));
+            (async () => {
+                const formData = new FormData(e.target);
+                formData.append('id_hall', this.activeHallForSession);
+
+                const result = await this.api.session.saveSession(formData);
+            })();
+
         }
     }
  
     // сохраняем стартовые значения для кнопки отмена
     // и возвращению к первоначальному состоянию
+    // при конфигурации зала и цен
     parseInitialData(action) {
         if(action === 'places') {
             // данные конфигурации зала (кресел)

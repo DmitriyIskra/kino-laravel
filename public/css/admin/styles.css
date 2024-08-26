@@ -643,6 +643,7 @@ select {
   height: 40px;
   box-sizing: content-box;
   width: calc(1440px * 0.5);
+  cursor: pointer;
 }
 
 .conf-step__seances-movie {

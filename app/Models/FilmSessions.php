@@ -10,7 +10,11 @@ class FilmSessions extends Model
     use HasFactory;
 
     protected $fillable = [
-        'is_film_id',
-        'time_from',
+        'film_id',
+        'film_name',
+        'hall_id',
+        'start_h',
+        'start_m',
+        'duration',
     ];
 }

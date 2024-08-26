@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Film;
+use App\Models\FilmSessions;
 use App\Models\Hall;
 use App\Models\Places;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use PhpParser\Node\Stmt\TryCatch;
 
 class ApiAdminController extends Controller
 {
@@ -113,7 +116,7 @@ class ApiAdminController extends Controller
             'duration' => $request ->duration,
             'country' => $request ->country,
         ]);
-        Log::info($result);
+        
         
         if($result) {
             return response()->json([
@@ -128,7 +131,7 @@ class ApiAdminController extends Controller
         } else {
             return response()->json([
                 'result' => false,
-                'body' => 'movie not saved',
+                'body' => 'the movie has not been saved',
             ]);
         }
 
@@ -139,7 +142,33 @@ class ApiAdminController extends Controller
      */
     public function save_session_film(Request $request) 
     {
-        // продолжительность добавлять уже здесь, от фильма 
+        try {
+            $film = Film::query()->where('id', $request->film)->first(['duration', 'title']);
+    
+            $session = FilmSessions::query()->create([
+                'film_id' => $request->film,
+                'hall_id' => $request->id_hall,
+                'start_h' => $request->hour,
+                'start_m' => $request->min,
+                'duration' => $film->duration,
+                'film_name' => $film->title,
+            ]);
+    
+            Log::info('session', [$session]);
+    
+       
+            return response()->json([
+                'result' => true,
+                'body' => $session,
+            ]);
+        } catch(Exception $e) {
+            return response()->json([
+                'result' => false,
+                'body' => 'the session has not been saved',
+            ]);
+        }
+      
+        
     }
 
     /**

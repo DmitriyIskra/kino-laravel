@@ -8,26 +8,32 @@ export default class RedrawSessionGrid {
         this.addSessionModal = this.section.querySelector('.modal__add-session');
     }
 
-    showAddFilm() {
+    showAddFilm() { // открыть поп-ап добавить фильм
         this.addFilmModal.classList.add('wrapper-modal_active');
     }
 
-    hideAddFilm() {
+    hideAddFilm() { // закрыть поп-ап добавить фильм
         this.addFilmModal.classList.remove('wrapper-modal_active');
-    }
-// --------------------------
-    showAddSession() {
-        this.addSessionModal.classList.add('wrapper-modal_active');
-    }
-
-    hideAddSession() {
-        this.addSessionModal.classList.remove('wrapper-modal_active');
     }
 
     renderFilm(data) {
         const film = this.patternFilm(data);
 
         this.wrapperMovies.append(film);
+    }
+    
+// -------------------------- 
+
+    showAddSession() { // открыть поп-ап добавить сессию 
+        this.addSessionModal.classList.add('wrapper-modal_active');
+    }
+
+    hideAddSession() { // закрыть поп-ап добавить сессию  
+        this.addSessionModal.classList.remove('wrapper-modal_active');
+    }
+
+    renderSession(data) {
+        const session = this.paternSession(data);
     }
 
 // --------------------------
@@ -52,6 +58,10 @@ export default class RedrawSessionGrid {
         console.log(div)
 
         return div;
+    }
+
+    paternSession(data) {
+
     }
 
     createEl(tag, classes = null, url = null, content = null) {

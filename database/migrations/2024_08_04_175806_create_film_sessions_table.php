@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('film_id')->unsigned();
             $table->foreign('film_id')->references('id')->on('films')->onDelete('cascade');
+            $table->string('film_name')->nullable();
             $table->integer('hall_id')->nullable();
-            $table->timestamp('start__h')->nullable();
-            $table->timestamp('start__m')->nullable();
+            $table->integer('start_h')->nullable();
+            $table->integer('start_m')->nullable();
             $table->integer('duration')->nullable();
 
             $table->timestamps();

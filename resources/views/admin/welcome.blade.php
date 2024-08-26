@@ -269,10 +269,10 @@
           </div>
         </div>
         
-        <fieldset class="conf-step__buttons text-center">
+        {{-- <fieldset class="conf-step__buttons text-center">
           <button class="conf-step__button conf-step__button-regular">Отмена</button>
           <input type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent conf-step__seances-submit">
-        </fieldset>  
+        </fieldset>   --}}
       </div>
 
       @include('../components/__modal-add-film')
