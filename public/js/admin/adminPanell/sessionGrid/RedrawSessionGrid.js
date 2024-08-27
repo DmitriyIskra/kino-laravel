@@ -4,16 +4,28 @@ export default class RedrawSessionGrid {
 
         this.wrapperMovies = this.section.querySelector('.conf-step__movies');
 
-        this.addFilmModal = this.section.querySelector('.modal__add-film');
+        this.filmModal = this.section.querySelector('.modal__film');
         this.addSessionModal = this.section.querySelector('.modal__add-session');
     }
 
-    showAddFilm() { // открыть поп-ап добавить фильм
-        this.addFilmModal.classList.add('wrapper-modal_active');
+    showModalFilm(action, data = null) { // открыть поп-ап добавить фильм
+        this.filmModal.classList.add('wrapper-modal_active');
+        const form = this.filmModal.querySelector('form');
+        form.dataset.type = action;
+
+        if(action === 'update') {
+            form.dataset.film_id = data.id
+            
+        };
     }
 
-    hideAddFilm() { // закрыть поп-ап добавить фильм
-        this.addFilmModal.classList.remove('wrapper-modal_active');
+    hideModalFilm() { // закрыть поп-ап добавить фильм
+        console.log('hide')
+        this.filmModal.classList.remove('wrapper-modal_active');
+        const form = this.filmModal.querySelector('form');
+        form.dataset.type = '';
+
+        if(form.dataset?.film_id) form.dataset = '';
     }
 
     renderFilm(data) {
@@ -34,6 +46,11 @@ export default class RedrawSessionGrid {
 
     renderSession(data) {
         const session = this.paternSession(data);
+        
+        // находим нужный таймлайн
+        const timeLine = this.section.querySelector(`[data-id_hall="${data.hall_id}"]`);
+
+        timeLine.append(session);
     }
 
 // --------------------------
@@ -54,14 +71,31 @@ export default class RedrawSessionGrid {
         div.append(img);
         div.append(h3);
         div.append(p);
-        
-        console.log(div)
 
         return div;
     }
 
     paternSession(data) {
+        const div = this.createEl('div', ['conf-step__seances-movie']);
+        div.style.width = (+data.duration / 2) + 'px'; 
+        div.style.left = ((+data.start_h * 60 + +data.start_m) / 2) + 'px';
+        const movie = this.section.querySelector(`[data-id_movie="${data.film_id}"]`);
+        const color = getComputedStyle(movie).backgroundColor;
+        div.style.backgroundColor = color;
 
+        const p1 = this.createEl('p', ['conf-step__seances-movie-title'], null, data.film_name);
+
+        const p2 = this.createEl(
+            'p', 
+            ['conf-step__seances-movie-start'], 
+            null, 
+            data.start_h + ':' + data.start_m
+        );
+
+        div.append(p1);
+        div.append(p2);
+
+        return div;
     }
 
     createEl(tag, classes = null, url = null, content = null) {

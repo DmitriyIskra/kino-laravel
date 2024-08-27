@@ -92,6 +92,13 @@ class ApiAdminController extends Controller
         return to_route('admin_welcome');
     }
 
+// ------------- START FILM
+    /**
+     * Получаем фильм.
+     */
+    public function get_film($id) {
+
+    }
 
     /**
      * Сохраняем фильм.
@@ -136,6 +143,33 @@ class ApiAdminController extends Controller
         }
 
     }
+    /**
+     * Обновляем фильм фильм.
+     */
+    public function update_film(Request $request) {
+        $file = $request->poster;
+
+        $nameOrigin = $file->getClientOriginalName();
+        $extension = $file->extension();
+        $hashName = $file->hashName();
+        $name = preg_replace("/\.$extension/i", '', $nameOrigin);
+
+        Storage::put("img/films/$name", $file);
+
+        $url = asset("img/films/$name/$hashName");
+
+        $result = Film::query()
+            ->where('id', $request->id)
+            ->create([
+                'poster' => $url,
+                'title' => $request->title,
+                'description' => $request->description,
+                'duration' => $request ->duration,
+                'country' => $request ->country,
+            ]);
+    }
+
+// ------------- END FILM
 
     /**
      * Сохраняем сессию.
@@ -167,8 +201,13 @@ class ApiAdminController extends Controller
                 'body' => 'the session has not been saved',
             ]);
         }
-      
-        
+    }
+
+    // получить все сессии
+    public function get_sessions() {
+        $sessions = FilmSessions::query()->get();
+
+        return response()->json(['body' => $sessions]);
     }
 
     /**

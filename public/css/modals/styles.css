@@ -16,14 +16,14 @@
     display: block;
 }
 
-.add-film-sess__form {
+.film-sess__form {
     display: flex;
     gap: 1vw;
 
     flex-direction: column;
 }
 
-.add-film-sess__label {
+.film-sess__label {
     display: flex;
     gap: 0.15vw;
 
@@ -58,7 +58,7 @@
     color: #848484;
 }
 
-.add-film-sess__input {
+.film-sess__input {
     height: 30px;
     padding-left: 7px;
 }
@@ -67,7 +67,7 @@
     width: 40%;
 }
 
-.add-film-sess__textarea {
+.film-sess__textarea {
     max-height: 82px;
     min-height: 82px;
     max-width: 287px;
@@ -77,6 +77,6 @@
     resize: none;
 }
 
-.add-film-sess__reset {
+.film-sess__reset {
     cursor: pointer;
 }

@@ -46,6 +46,18 @@ export default class ControllAdminPanel {
 
         this.parseInitialData('places');
         this.parseInitialData('prices');
+
+        this.initSessions();
+    }
+
+    initSessions() {
+        (async () => {
+            const sessions = await this.api.session.read('all_sessions');
+
+            sessions.forEach(item => {
+                this.redraw.session.renderSession(item);
+            })
+        })()
     }
 
     registerEvents() {
@@ -57,7 +69,7 @@ export default class ControllAdminPanel {
         this.redraw.price.section.addEventListener('input', this.input);
         // сетка сеансов
         this.redraw.session.section.addEventListener('click', this.click);
-        this.redraw.session.addFilmModal.addEventListener('submit', this.submit);
+        this.redraw.session.filmModal.addEventListener('submit', this.submit);
         this.redraw.session.addSessionModal.addEventListener('submit', this.submit);
     }
 
@@ -190,11 +202,22 @@ export default class ControllAdminPanel {
 
         // модалка для добавления фильма показ
         if(e.target.closest('.conf-step__add-film')) {
-            this.redraw.session.showAddFilm();
+            this.redraw.session.showModalFilm('add');
+        }
+        // модалка для обновления фильма показ
+        if(e.target.closest('.conf-step__movie')) {
+            const element = e.target.closest('.conf-step__movie');
+            const id = element.dataset.id;
+
+            (async () => {
+                // получаем данные о фильме для заполнения модалки
+            })()
+
+            this.redraw.session.showModalFilm('add');
         }
         // закрытие
-        if(e.target.closest('.add-film__reset')) {
-            this.redraw.session.hideAddFilm();
+        if(e.target.closest('.film__reset')) {
+            this.redraw.session.hideModalFilm();
         }
 
         // модалка для добавления сеанса показ
@@ -262,15 +285,26 @@ export default class ControllAdminPanel {
 
     submit(e) {
         e.preventDefault();
-        
-        if(e.target.closest('.add-film__form')) {
+        // создание фильма
+        if(e.target.closest('.film__form') &&
+        e.target.dataset.type === 'add') {
             const formData = new FormData(e.target); 
             (async () => {
-                const result = await this.api.session.saveFilm(formData);
+                const result = await this.api.session.create('film', formData);
 
                 this.redraw.session.renderFilm(result);
 
-                this.redraw.session.hideAddFilm(); 
+                this.redraw.session.hideModalFilm(); 
+                e.target.reset();       
+            })();
+        }
+        // обновление фильма
+        if(e.target.closest('.film__form') &&
+        e.target.dataset.type === 'update') {
+            const formData = new FormData(e.target); 
+            (async () => {
+                
+
                 e.target.reset();       
             })();
         }
@@ -282,12 +316,19 @@ export default class ControllAdminPanel {
                 const formData = new FormData(e.target);
                 formData.append('id_hall', this.activeHallForSession);
 
-                const result = await this.api.session.saveSession(formData);
+                const result = await this.api.session.create('session', formData);
+                this.redraw.session.renderSession(result);
+
+                this.redraw.session.hideAddSession();
             })();
 
         }
     }
  
+
+// -------------------------------------------------------------------------------
+//              ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+
     // сохраняем стартовые значения для кнопки отмена
     // и возвращению к первоначальному состоянию
     // при конфигурации зала и цен

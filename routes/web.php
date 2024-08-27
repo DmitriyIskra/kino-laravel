@@ -37,4 +37,6 @@ Route::post('/save_film', [ApiAdminController::class, 'save_film']);
 
 // сохраняем сеанс
 Route::post('/save_session', [ApiAdminController::class, 'save_session_film']);
+// получить все сеансы
+Route::get('/get_sessions', [ApiAdminController::class, 'get_sessions']);
  

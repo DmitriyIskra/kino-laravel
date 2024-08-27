@@ -16,6 +16,6 @@ class Film extends Model
         'description',
         'duration',
         'country',
-        'is_hall_id',
+        'halls_id',
     ];
 }
