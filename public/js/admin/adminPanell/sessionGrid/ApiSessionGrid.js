@@ -53,10 +53,33 @@ export default class ApiSessionGrid {
                 throw new Error('Ошибка при получении сессий');
             }
         }
+
+        if(action === 'film') {
+            try {
+                const response = await fetch(`/get_film/${id}`);
+
+                const result = await response.json();
+
+                return result;
+            } catch (error) {
+                throw new Error('Ошибка при получении фильма');
+            }
+        }
     }
 
-    async update() {
+    async update(action, data) {
+        if(action === 'film') {
+            const response = await fetch('', {
+                method : "POST",
+                headers : {
+                    "X-CSRF-TOKEN" : this.token,
+                },
+                body : data,
+            })
 
+            const result = await response.json();
+            console.log(result);
+        }
     }
 
     async delete() {

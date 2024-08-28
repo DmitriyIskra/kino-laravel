@@ -15,17 +15,20 @@ export default class RedrawSessionGrid {
 
         if(action === 'update') {
             form.dataset.film_id = data.id
-            
+            form.title.value = data.title;
+            form.duration.value = data.duration;
+            form.country.value = data.country;
+            form.country.value = data.country;
+            form.description.value = data.description;
         };
     }
 
     hideModalFilm() { // закрыть поп-ап добавить фильм
-        console.log('hide')
         this.filmModal.classList.remove('wrapper-modal_active');
         const form = this.filmModal.querySelector('form');
         form.dataset.type = '';
 
-        if(form.dataset?.film_id) form.dataset = '';
+        if(form.dataset?.film_id) form.dataset.film_id = '';
     }
 
     renderFilm(data) {

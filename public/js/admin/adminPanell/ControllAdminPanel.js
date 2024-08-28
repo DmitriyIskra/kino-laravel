@@ -207,13 +207,14 @@ export default class ControllAdminPanel {
         // модалка для обновления фильма показ
         if(e.target.closest('.conf-step__movie')) {
             const element = e.target.closest('.conf-step__movie');
-            const id = element.dataset.id;
+            const id = element.dataset.id_movie;
 
             (async () => {
                 // получаем данные о фильме для заполнения модалки
+                const film = await this.api.session.read('film', id);
+                this.redraw.session.showModalFilm('update', film);
             })()
 
-            this.redraw.session.showModalFilm('add');
         }
         // закрытие
         if(e.target.closest('.film__reset')) {
@@ -231,7 +232,6 @@ export default class ControllAdminPanel {
             this.redraw.session.hideAddSession();
         }
 
-        // удаляем добавленые фильмы и сеансы по кнопке отмена
     }
 
     input(e) {
@@ -303,7 +303,14 @@ export default class ControllAdminPanel {
         e.target.dataset.type === 'update') {
             const formData = new FormData(e.target); 
             (async () => {
-                
+                const formData = new FormData(e.target); 
+                const film_id = e.target.dataset.film_id;
+                formData.append('film_id', film_id);
+                const result = await this.api.session.update('film', formData);
+
+                this.redraw.session.renderFilm(result);
+
+                this.redraw.session.hideModalFilm(); 
 
                 e.target.reset();       
             })();

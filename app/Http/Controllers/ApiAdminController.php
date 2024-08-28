@@ -97,7 +97,10 @@ class ApiAdminController extends Controller
      * Получаем фильм.
      */
     public function get_film($id) {
-
+        Log::info('id film', ['body' => $id]);
+        $film = Film::query()->where('id', $id)->first();
+        Log::info('info about film', [$film]);
+        return response()->json($film);
     }
 
     /**
