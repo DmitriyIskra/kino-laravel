@@ -36,6 +36,8 @@ Route::get('/get_price/{id}', [ApiAdminController::class, 'get_prices']);
 Route::post('/save_film', [ApiAdminController::class, 'save_film']);
 // получить фильм
 Route::get('/get_film/{id}', [ApiAdminController::class, 'get_film']);
+// обновить фильм
+Route::post('/update_film', [ApiAdminController::class, 'update_film']);
 
 // сохраняем сеанс
 Route::post('/save_session', [ApiAdminController::class, 'save_session_film']);

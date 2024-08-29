@@ -69,16 +69,22 @@ export default class ApiSessionGrid {
 
     async update(action, data) {
         if(action === 'film') {
-            const response = await fetch('', {
-                method : "POST",
-                headers : {
-                    "X-CSRF-TOKEN" : this.token,
-                },
-                body : data,
-            })
+            try {
+                const response = await fetch('update_film', {
+                    method : "POST",
+                    headers : {
+                        "X-CSRF-TOKEN" : this.token,
+                    },
+                    body : data,
+                })
+    
+                const result = await response.json();
 
-            const result = await response.json();
-            console.log(result);
+                return result.body;
+            } catch (error) {
+                throw new Error('Ошибка при обновлении фильма');
+            }
+            
         }
     }
 

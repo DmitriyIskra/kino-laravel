@@ -97,9 +97,9 @@ class ApiAdminController extends Controller
      * Получаем фильм.
      */
     public function get_film($id) {
-        Log::info('id film', ['body' => $id]);
+ 
         $film = Film::query()->where('id', $id)->first();
-        Log::info('info about film', [$film]);
+ 
         return response()->json($film);
     }
 
@@ -150,26 +150,59 @@ class ApiAdminController extends Controller
      * Обновляем фильм фильм.
      */
     public function update_film(Request $request) {
-        $file = $request->poster;
+        try {
+            $file = isset($request->poster) ? $request->poster : null;
 
-        $nameOrigin = $file->getClientOriginalName();
-        $extension = $file->extension();
-        $hashName = $file->hashName();
-        $name = preg_replace("/\.$extension/i", '', $nameOrigin);
+            $result = Film::query()
+                ->where('id', $request->film_id)
+                ->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'duration' => $request ->duration,
+                    'country' => $request ->country,
+                ]);
 
-        Storage::put("img/films/$name", $file);
+            if($file) {
+                $nameOrigin = $file->getClientOriginalName();
+                $extension = $file->extension();
+                $hashName = $file->hashName();
+                $name = preg_replace("/\.$extension/i", '', $nameOrigin);
+        
+                Storage::put("img/films/$name", $file);
+        
+                $url = asset("img/films/$name/$hashName");
 
-        $url = asset("img/films/$name/$hashName");
+                // Удаляем старый файл вместе с директорией
+                $oldPoster = Film::query()
+                    ->where('id', $request->film_id)->first('poster')->poster;
 
-        $result = Film::query()
-            ->where('id', $request->id)
-            ->create([
-                'poster' => $url,
-                'title' => $request->title,
-                'description' => $request->description,
-                'duration' => $request ->duration,
-                'country' => $request ->country,
+                $pathOldPoster = preg_replace('/https:\/\/kinizal\//', '', $oldPoster);
+
+                preg_match('/^(img\/films\/.+)\/.+/', $pathOldPoster, $directory); 
+
+                Storage::deleteDirectory($directory[1]);
+
+                // Обновляем путь к новому постеру
+                $resultUrl = Film::query()
+                    ->where('id', $request->film_id)
+                    ->update(['poster' => $url,]);
+            }
+
+            $film = Film::query()
+                ->where('id', $request->film_id)
+                ->first();
+
+            return response()->json([
+                'result' => true,
+                'body' => $film
             ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'result' => false,
+                'body' => 'update false'
+            ]);
+        }
+        
     }
 
 // ------------- END FILM

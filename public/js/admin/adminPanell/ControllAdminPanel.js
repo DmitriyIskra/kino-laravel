@@ -301,14 +301,15 @@ export default class ControllAdminPanel {
         // обновление фильма
         if(e.target.closest('.film__form') &&
         e.target.dataset.type === 'update') {
-            const formData = new FormData(e.target); 
             (async () => {
                 const formData = new FormData(e.target); 
+
                 const film_id = e.target.dataset.film_id;
                 formData.append('film_id', film_id);
-                const result = await this.api.session.update('film', formData);
 
-                this.redraw.session.renderFilm(result);
+                const result = await this.api.session.update('film', formData);
+                console.log(result)
+                // this.redraw.session.renderFilm(result);
 
                 this.redraw.session.hideModalFilm(); 
 

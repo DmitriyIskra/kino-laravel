@@ -20,6 +20,7 @@ export default class RedrawSessionGrid {
             form.country.value = data.country;
             form.country.value = data.country;
             form.description.value = data.description;
+            form.poster.removeAttribute('required');
         };
     }
 
@@ -28,13 +29,20 @@ export default class RedrawSessionGrid {
         const form = this.filmModal.querySelector('form');
         form.dataset.type = '';
 
-        if(form.dataset?.film_id) form.dataset.film_id = '';
+        if(form.dataset?.film_id) {
+            form.dataset.film_id = '';
+            form.poster.setAttribute('required', '');
+        };
     }
 
     renderFilm(data) {
         const film = this.patternFilm(data);
 
         this.wrapperMovies.append(film);
+    }
+
+    updateFilm(data) {
+
     }
     
 // -------------------------- 
