@@ -153,7 +153,7 @@ class ApiAdminController extends Controller
         try {
             $file = isset($request->poster) ? $request->poster : null;
 
-            $result = Film::query()
+            Film::query()
                 ->where('id', $request->film_id)
                 ->update([
                     'title' => $request->title,
@@ -161,7 +161,7 @@ class ApiAdminController extends Controller
                     'duration' => $request ->duration,
                     'country' => $request ->country,
                 ]);
-
+            // если передан новый постер
             if($file) {
                 $nameOrigin = $file->getClientOriginalName();
                 $extension = $file->extension();
@@ -188,9 +188,15 @@ class ApiAdminController extends Controller
                     ->update(['poster' => $url,]);
             }
 
+            
             $film = Film::query()
                 ->where('id', $request->film_id)
                 ->first();
+            
+            // Обновляем duration в сессиях к фильму
+            FilmSessions::query()
+                ->where('film_id', $request->film_id)
+                ->update(['duration' => $film->duration,]);
 
             return response()->json([
                 'result' => true,

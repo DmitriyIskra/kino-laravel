@@ -42,7 +42,20 @@ export default class RedrawSessionGrid {
     }
 
     updateFilm(data) {
+        console.log(data)
 
+        const film = this.section.querySelector(`.conf-step__movie[data-id_movie="${data.id}"]`);
+        console.log('film', film)
+        film.children[0].src = data.poster;
+        film.children[1].textContent = data.title;
+        film.children[2].textContent = data.duration + ' ' + 'минут';
+
+        // обновляем причасные к фильму сеансы
+        this.updateSessions({
+            id : data.id,
+            duration : data.duration,
+            title : data.title,
+        });
     }
     
 // -------------------------- 
@@ -64,7 +77,23 @@ export default class RedrawSessionGrid {
         timeLine.append(session);
     }
 
-// --------------------------
+    // обновление нескольких сеансов (при обновлении фильма)
+    updateSessions(data) {
+        const sessions = this.section
+            .querySelectorAll(`.conf-step__seances-movie[data-of_movie="${data.id}"]`);
+
+        [...sessions].forEach(item => {
+            item.style.width = (+data.duration / 2) + 'px';
+            item.children[0].textContent = data.title;
+        })
+    }
+
+    // обновление одного сеанса
+    updateSession() {
+        // code...
+    }
+
+// ---------------- PATTERNS
 
     patternFilm(data) {
         const div = this.createEl('div', ['conf-step__movie']);
@@ -87,9 +116,11 @@ export default class RedrawSessionGrid {
     }
 
     paternSession(data) {
+        console.log(data)
         const div = this.createEl('div', ['conf-step__seances-movie']);
         div.style.width = (+data.duration / 2) + 'px'; 
         div.style.left = ((+data.start_h * 60 + +data.start_m) / 2) + 'px';
+        div.dataset.of_movie = data.film_id;
         const movie = this.section.querySelector(`[data-id_movie="${data.film_id}"]`);
         const color = getComputedStyle(movie).backgroundColor;
         div.style.backgroundColor = color;

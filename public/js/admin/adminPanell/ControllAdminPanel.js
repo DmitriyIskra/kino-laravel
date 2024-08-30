@@ -308,12 +308,12 @@ export default class ControllAdminPanel {
                 formData.append('film_id', film_id);
 
                 const result = await this.api.session.update('film', formData);
-                console.log(result)
-                // this.redraw.session.renderFilm(result);
 
                 this.redraw.session.hideModalFilm(); 
 
-                e.target.reset();       
+                e.target.reset();   
+                
+                this.redraw.session.updateFilm(result)
             })();
         }
 
