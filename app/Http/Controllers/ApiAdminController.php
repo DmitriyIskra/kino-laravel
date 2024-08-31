@@ -104,6 +104,27 @@ class ApiAdminController extends Controller
     }
 
     /**
+     * Получаем все доступные фильмы
+     */ 
+    public function get_all_films() {
+        try {
+            $films = Film::get();
+
+
+
+            return response()->json([
+                'status' => true,
+                'films' => $films,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'films' => 'films don\'t available',
+            ]);
+        }
+    }
+
+    /**
      * Сохраняем фильм.
      */
     public function save_film(Request $request)
@@ -189,14 +210,17 @@ class ApiAdminController extends Controller
             }
 
             
+            // Обновляем данные в сессиях к фильму
             $film = Film::query()
                 ->where('id', $request->film_id)
                 ->first();
             
-            // Обновляем duration в сессиях к фильму
             FilmSessions::query()
                 ->where('film_id', $request->film_id)
-                ->update(['duration' => $film->duration,]);
+                ->update([
+                    'duration' => $film->duration,
+                    'film_name' => $film->title,
+                ]);
 
             return response()->json([
                 'result' => true,

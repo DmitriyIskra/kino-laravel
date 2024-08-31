@@ -237,36 +237,6 @@
           @else
             <P>Ни один зал не создан</P>
           @endif
-          {{-- <div class="conf-step__seances-hall">
-            <h3 class="conf-step__seances-title">Зал 1</h3>
-            <div class="conf-step__seances-timeline">
-              <div class="conf-step__seances-movie" style="width: 60px; background-color: rgb(133, 255, 137); left: 0;">
-                <p class="conf-step__seances-movie-title">Миссия выполнима</p>
-                <p class="conf-step__seances-movie-start">00:00</p>
-              </div>
-              <div class="conf-step__seances-movie" style="width: 60px; background-color: rgb(133, 255, 137); left: 360px;">
-                <p class="conf-step__seances-movie-title">Миссия выполнима</p>
-                <p class="conf-step__seances-movie-start">12:00</p>
-              </div>
-              <div class="conf-step__seances-movie" style="width: 65px; background-color: rgb(202, 255, 133); left: 420px;">
-                <p class="conf-step__seances-movie-title">Звёздные войны XXIII: Атака клонированных клонов</p>
-                <p class="conf-step__seances-movie-start">14:00</p>
-              </div>              
-            </div>
-          </div> --}}
-          {{-- <div class="conf-step__seances-hall">
-            <h3 class="conf-step__seances-title">Зал 2</h3>
-            <div class="conf-step__seances-timeline">
-              <div class="conf-step__seances-movie" style="width: 65px; background-color: rgb(202, 255, 133); left: 595px;">
-                <p class="conf-step__seances-movie-title">Звёздные войны XXIII: Атака клонированных клонов</p>
-                <p class="conf-step__seances-movie-start">19:50</p>
-              </div>
-              <div class="conf-step__seances-movie" style="width: 60px; background-color: rgb(133, 255, 137); left: 660px;">
-                <p class="conf-step__seances-movie-title">Миссия выполнима</p>
-                <p class="conf-step__seances-movie-start">22:00</p>
-              </div>              
-            </div>
-          </div> --}}
         </div>
         
         {{-- <fieldset class="conf-step__buttons text-center">
@@ -277,6 +247,7 @@
 
       @include('../components/__modal-film')
       @include('../components/__modal-add-session')
+      @include('../components/__modal-edit-session')
     </section>
     
     <section class="conf-step">

@@ -216,20 +216,35 @@ export default class ControllAdminPanel {
             })()
 
         }
-        // закрытие
-        if(e.target.closest('.film__reset')) {
+        // закрытие модалки для любой фильма
+        if(e.target.closest('.film-session__reset')) {
             this.redraw.session.hideModalFilm();
         }
-
         // модалка для добавления сеанса показ
-        if(e.target.closest('.conf-step__seances-timeline')) {
+        if(e.target.closest('.conf-step__seances-timeline') &&
+        !e.target.closest('.conf-step__seances-movie')) {
             const target = e.target.closest('.conf-step__seances-timeline')
             this.activeHallForSession = +target.dataset.id_hall;
-            this.redraw.session.showAddSession();
+            // вставляем в модалку актуальные названия фильмов
+            (async () => {
+                const data = await this.api.session.read('films');
+
+                this.redraw.session.showAddSession(data);
+            })()
         }
-        // закрытие
+
+        // закрытие модалка для добавления сеанса
         if(e.target.closest('.add-sess__reset')) {
             this.redraw.session.hideAddSession();
+        }
+
+        // модалка для обновления сеанса показ
+        if(e.target.closest('.conf-step__seances-movie')) {
+            const session = e.target.closest('.conf-step__seances-movie');
+            const film_name = session.children[0].textContent;
+            const session_time = session.children[1].textContent;
+
+            this.redraw.session.showEditSession({film_name, session_time});
         }
 
     }

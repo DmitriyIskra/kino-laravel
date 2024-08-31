@@ -16,14 +16,14 @@
     display: block;
 }
 
-.film-sess__form {
+.film-session__form {
     display: flex;
     gap: 1vw;
 
     flex-direction: column;
 }
 
-.film-sess__label {
+.film-session__label {
     display: flex;
     gap: 0.15vw;
 
@@ -34,40 +34,18 @@
     flex-direction: column;
 }
 
-.add-sess__start-film p {
-    margin-bottom: 0.15vw;
-
-    font-size: 1.2rem;
-    
-    color: #848484;
-}
-
-.add-sess__label section {
-    width: 10%;
-}
-
-.add-sess__wr-inputs {
-    display: flex;
-}
-
-.add-sess__label {
-    width: 25%;
-
-    font-size: 1.2rem;
-    
-    color: #848484;
-}
-
-.film-sess__input {
+.film-session__input {
     height: 30px;
     padding-left: 7px;
 }
 
-.add-sess__input {
-    width: 40%;
+.film-session__reset {
+    cursor: pointer;
 }
 
-.film-sess__textarea {
+
+/* --------- Фильмы ----------- */
+.film__textarea {
     max-height: 82px;
     min-height: 82px;
     max-width: 287px;
@@ -77,6 +55,44 @@
     resize: none;
 }
 
-.film-sess__reset {
-    cursor: pointer;
+
+/* ----------- Сессии --------------- */
+.session__start-film {
+    margin-top: 10px;
+}
+
+.session__start-film p {
+    margin-bottom: 0.15vw;
+
+    font-size: 1.2rem;
+    
+    color: #848484;
+}
+
+.session__label section {
+    width: 10%;
+}
+
+.session__wr-inputs {
+    display: flex;
+}
+
+.session__label {
+    width: 25%;
+
+    flex-direction: row;
+    align-items: center;
+}
+
+.session__input {
+    width: 40%;
+}
+
+
+/* ----------- Сессии - обновление --------------- */
+
+.session-edit__film-name {
+    font-size: 1.5rem;
+    
+    color: #242323;
 }

@@ -5,7 +5,8 @@ export default class RedrawSessionGrid {
         this.wrapperMovies = this.section.querySelector('.conf-step__movies');
 
         this.filmModal = this.section.querySelector('.modal__film');
-        this.addSessionModal = this.section.querySelector('.modal__add-session');
+        this.addSessionModal = this.section.querySelector('.modal__session');
+        this.editSessionModal = this.section.querySelector('.modal__edit-session');
     }
 
     showModalFilm(action, data = null) { // открыть поп-ап добавить фильм
@@ -42,10 +43,8 @@ export default class RedrawSessionGrid {
     }
 
     updateFilm(data) {
-        console.log(data)
-
         const film = this.section.querySelector(`.conf-step__movie[data-id_movie="${data.id}"]`);
-        console.log('film', film)
+
         film.children[0].src = data.poster;
         film.children[1].textContent = data.title;
         film.children[2].textContent = data.duration + ' ' + 'минут';
@@ -60,8 +59,32 @@ export default class RedrawSessionGrid {
     
 // -------------------------- 
 
-    showAddSession() { // открыть поп-ап добавить сессию 
+    showAddSession(data) { // открыть поп-ап добавить сессию 
+        console.log(data)
+        // формируем актуальные названия фильмов
+        const select = this.addSessionModal.querySelector('select');
+        
+        if(select.children.length) select.innerHTML = '';
+
+        data.forEach(film => {
+            console.log(film.title)
+            const option = this.createEl('option', null, null, film.title);
+            option.value = film.id;
+            select.append(option);
+        })
+
         this.addSessionModal.classList.add('wrapper-modal_active');
+    }
+
+    showEditSession(data) { // открыть поп-ап обновить сессию 
+        const form = this.editSessionModal.querySelector('form');
+        form.children[0].textContent = data.film_name;
+
+        const sessionTime = data.session_time.split(':');
+        form.hour.value = sessionTime[0];
+        form.min.value = sessionTime[1];
+
+        this.editSessionModal.classList.add('wrapper-modal_active');
     }
 
     hideAddSession() { // закрыть поп-ап добавить сессию  
@@ -116,7 +139,6 @@ export default class RedrawSessionGrid {
     }
 
     paternSession(data) {
-        console.log(data)
         const div = this.createEl('div', ['conf-step__seances-movie']);
         div.style.width = (+data.duration / 2) + 'px'; 
         div.style.left = ((+data.start_h * 60 + +data.start_m) / 2) + 'px';
@@ -145,7 +167,7 @@ export default class RedrawSessionGrid {
 
         if(classes) el.classList.add(...classes);
 
-        if(classes) el.textContent = content;
+        if(content) el.textContent = content;
 
         if(url) el.src = url;
 

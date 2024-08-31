@@ -65,6 +65,20 @@ export default class ApiSessionGrid {
                 throw new Error('Ошибка при получении фильма');
             }
         }
+
+        if(action === 'films') {
+            try {
+                const response = await fetch(`/get_all_films`);
+
+                const result = await response.json();
+                
+                if(result.status) {
+                    return result.films;
+                }
+            } catch (error) {
+                throw new Error('Ошибка при получении фильмов');
+            }
+        }
     }
 
     async update(action, data) {
