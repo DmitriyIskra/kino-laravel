@@ -69,8 +69,12 @@ export default class ControllAdminPanel {
         this.redraw.price.section.addEventListener('input', this.input);
         // сетка сеансов
         this.redraw.session.section.addEventListener('click', this.click);
+
         this.redraw.session.filmModal.addEventListener('submit', this.submit);
+        this.redraw.session.filmEditModal.addEventListener('submit', this.submit);
+
         this.redraw.session.addSessionModal.addEventListener('submit', this.submit);
+        this.redraw.session.editSessionModal.addEventListener('submit', this.submit);
     }
 
     click(e) { 
@@ -199,10 +203,11 @@ export default class ControllAdminPanel {
         // подвязать в миграциях сеансы к залу, если удаляем зал то и сеансов в нем не будет
         // сначала добавляем фильм, без фильма сеанс не возможен и без зала сеанс не возможен
         // для добавления фильма нужна модалка
-
+        
+        // --------- Фильмы
         // модалка для добавления фильма показ
         if(e.target.closest('.conf-step__add-film')) {
-            this.redraw.session.showModalFilm('add');
+            this.redraw.session.showModalFilm();
         }
         // модалка для обновления фильма показ
         if(e.target.closest('.conf-step__movie')) {
@@ -212,18 +217,41 @@ export default class ControllAdminPanel {
             (async () => {
                 // получаем данные о фильме для заполнения модалки
                 const film = await this.api.session.read('film', id);
-                this.redraw.session.showModalFilm('update', film);
+                this.redraw.session.showModalEditFilm(film);
             })()
 
         }
-        // закрытие модалки для любой фильма
-        if(e.target.closest('.film-session__reset')) {
+        // закрытие модалки для добавления фильма
+        if(e.target.closest('.film__add-reset')) {
             this.redraw.session.hideModalFilm();
         }
+        // закрытие модалки для обновления фильма
+        if(e.target.closest('.film__update-reset')) {
+            this.redraw.session.hideModalEditFilm();
+        }
+
+        // Удаление фильма
+        if(e.target.closest('.film__button-delete')) {
+            const form = e.target.closest('form');
+            const filmId = form.dataset.film_id;
+
+            (async () => {
+                const result = this.api.session.delete('film', filmId);
+
+                if(result) this.redraw.session.deleteFilm(filmId);
+
+                this.redraw.session.hideModalEditFilm();
+            })()
+        }
+
+
+        // --------- Сеансы
         // модалка для добавления сеанса показ
         if(e.target.closest('.conf-step__seances-timeline') &&
         !e.target.closest('.conf-step__seances-movie')) {
-            const target = e.target.closest('.conf-step__seances-timeline')
+            const target = e.target.closest('.conf-step__seances-timeline');
+
+            // Для последующей отрисовки сеанса на странице в нужном timeline
             this.activeHallForSession = +target.dataset.id_hall;
             // вставляем в модалку актуальные названия фильмов
             (async () => {
@@ -234,19 +262,39 @@ export default class ControllAdminPanel {
         }
 
         // закрытие модалка для добавления сеанса
-        if(e.target.closest('.add-sess__reset')) {
+        if(e.target.closest('.session__add-reset')) {
             this.redraw.session.hideAddSession();
         }
 
         // модалка для обновления сеанса показ
         if(e.target.closest('.conf-step__seances-movie')) {
             const session = e.target.closest('.conf-step__seances-movie');
+            const id = session.dataset.id;
             const film_name = session.children[0].textContent;
             const session_time = session.children[1].textContent;
 
-            this.redraw.session.showEditSession({film_name, session_time});
+            this.redraw.session.showEditSession({id, film_name, session_time});
         }
 
+        // закрытие модалка для обновления сеанса
+        if(e.target.closest('.session__update-reset')) {
+            this.redraw.session.hideEditSession();
+        }
+
+        // удаление сеанса
+        if(e.target.closest('.session__button-delete')) {
+            const form = e.target.closest('form');
+
+            const id = form.dataset.id_session;
+
+            (async () => {
+                const result = await this.api.session.delete('session', id);
+
+                this.redraw.session.hideEditSession();
+
+                if(result) this.redraw.session.deleteSessions(id);
+            })()
+        }
     }
 
     input(e) {
@@ -300,9 +348,9 @@ export default class ControllAdminPanel {
 
     submit(e) {
         e.preventDefault();
+        // ===== ФИЛЬМЫ
         // создание фильма
-        if(e.target.closest('.film__form') &&
-        e.target.dataset.type === 'add') {
+        if(e.target.closest('.film__add-form')) {
             const formData = new FormData(e.target); 
             (async () => {
                 const result = await this.api.session.create('film', formData);
@@ -314,8 +362,7 @@ export default class ControllAdminPanel {
             })();
         }
         // обновление фильма
-        if(e.target.closest('.film__form') &&
-        e.target.dataset.type === 'update') {
+        if(e.target.closest('.film__update-form')) {
             (async () => {
                 const formData = new FormData(e.target); 
 
@@ -324,7 +371,7 @@ export default class ControllAdminPanel {
 
                 const result = await this.api.session.update('film', formData);
 
-                this.redraw.session.hideModalFilm(); 
+                this.redraw.session.hideModalEditFilm(); 
 
                 e.target.reset();   
                 
@@ -332,7 +379,9 @@ export default class ControllAdminPanel {
             })();
         }
 
-        if(e.target.closest('.add-sess__form')) {
+        // ===== СЕАНСЫ
+        // добавление сеанса
+        if(e.target.closest('.session__add-form')) {
             this.activeHallForSession;
 
             (async () => {
@@ -342,9 +391,28 @@ export default class ControllAdminPanel {
                 const result = await this.api.session.create('session', formData);
                 this.redraw.session.renderSession(result);
 
+                e.target.reset();
+
                 this.redraw.session.hideAddSession();
             })();
+        }
+        // редактирование сеанса
+        if(e.target.closest('.session__update-form')) {
+            const form = e.target.closest('.session__update-form');
 
+            const id = form.dataset.id_session;
+
+            (async () => {
+                const formData = new FormData(form);
+                formData.append('id', id);
+
+                const result = await this.api.session.update('session', formData);
+                this.redraw.session.updateSession(result);
+
+                e.target.reset();
+
+                this.redraw.session.hideEditSession();
+            })()
         }
     }
  

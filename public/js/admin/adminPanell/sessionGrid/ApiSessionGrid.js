@@ -98,12 +98,61 @@ export default class ApiSessionGrid {
             } catch (error) {
                 throw new Error('Ошибка при обновлении фильма');
             }
-            
+        }
+
+        if(action === 'session') {
+            try {
+                const response = await fetch('/update_session', {
+                    method : "POST",
+                    headers : {
+                        "X-CSRF-TOKEN" : this.token,
+                    },
+                    body : data,
+                })
+    
+                const result = await response.json();
+
+                if(result.status) return result.body;
+            } catch (error) {
+                throw new Error('Ошибка обновления сеанса')
+            }
         }
     }
 
-    async delete() {
+    async delete(action, id) {
+        if(action === 'film') {
+            try {
+                const response = await fetch(`/destroy_film/${id}`, {
+                    method : 'DELETE',
+                    headers : {
+                        "X-CSRF-TOKEN" : this.token,
+                    }
+                })
+    
+                const result = await response.json();
+    
+                if(result.status) return result.status;
+            } catch (error) {
+                throw new Error('Ошибка при удалении фильма');
+            }
+        }
 
+        if(action === 'session') {
+            try {
+                const response = await fetch(`/destroy_session/${id}`, {
+                    method : 'DELETE',
+                    headers : {
+                        "X-CSRF-TOKEN" : this.token,
+                    }
+                })
+    
+                const result = await response.json();
+
+                if(result.status) return result.status;
+            } catch (error) {
+                throw new Error('Ошибка при удалении фильма');
+            }
+        }
     }
 
 }

@@ -4,37 +4,42 @@ export default class RedrawSessionGrid {
 
         this.wrapperMovies = this.section.querySelector('.conf-step__movies');
 
-        this.filmModal = this.section.querySelector('.modal__film');
+        this.filmModal = this.section.querySelector('.modal__add-film');
+        this.filmEditModal = this.section.querySelector('.modal__edit-film');
         this.addSessionModal = this.section.querySelector('.modal__session');
         this.editSessionModal = this.section.querySelector('.modal__edit-session');
     }
 
-    showModalFilm(action, data = null) { // открыть поп-ап добавить фильм
+    showModalFilm() { // открыть поп-ап добавить фильм
         this.filmModal.classList.add('wrapper-modal_active');
-        const form = this.filmModal.querySelector('form');
-        form.dataset.type = action;
-
-        if(action === 'update') {
-            form.dataset.film_id = data.id
-            form.title.value = data.title;
-            form.duration.value = data.duration;
-            form.country.value = data.country;
-            form.country.value = data.country;
-            form.description.value = data.description;
-            form.poster.removeAttribute('required');
-        };
     }
 
     hideModalFilm() { // закрыть поп-ап добавить фильм
         this.filmModal.classList.remove('wrapper-modal_active');
-        const form = this.filmModal.querySelector('form');
-        form.dataset.type = '';
+    }
+
+    showModalEditFilm(data) {
+        this.filmEditModal.classList.add('wrapper-modal_active');
+        const form = this.filmEditModal.querySelector('form');
+
+        form.dataset.film_id = data.id;
+        form.title.value = data.title;
+        form.duration.value = data.duration;
+        form.country.value = data.country;
+        form.country.value = data.country;
+        form.description.value = data.description;
+    }
+
+    hideModalEditFilm() { // закрыть поп-ап добавить фильм
+        this.filmEditModal.classList.remove('wrapper-modal_active');
+        const form = this.filmEditModal.querySelector('form');
 
         if(form.dataset?.film_id) {
             form.dataset.film_id = '';
-            form.poster.setAttribute('required', '');
         };
     }
+
+    
 
     renderFilm(data) {
         const film = this.patternFilm(data);
@@ -42,7 +47,7 @@ export default class RedrawSessionGrid {
         this.wrapperMovies.append(film);
     }
 
-    updateFilm(data) {
+    updateFilm(data) { // обновление отображения фильма на странице
         const film = this.section.querySelector(`.conf-step__movie[data-id_movie="${data.id}"]`);
 
         film.children[0].src = data.poster;
@@ -56,11 +61,17 @@ export default class RedrawSessionGrid {
             title : data.title,
         });
     }
+
+    deleteFilm(id) {
+        const film = this.section.querySelector(`.conf-step__movie[data-id_movie="${id}"]`);
+        film.remove();
+
+        this.deleteSessions(id);
+    }
     
 // -------------------------- 
 
     showAddSession(data) { // открыть поп-ап добавить сессию 
-        console.log(data)
         // формируем актуальные названия фильмов
         const select = this.addSessionModal.querySelector('select');
         
@@ -76,8 +87,15 @@ export default class RedrawSessionGrid {
         this.addSessionModal.classList.add('wrapper-modal_active');
     }
 
+    hideAddSession() { // закрыть поп-ап добавить сессию  
+        this.addSessionModal.classList.remove('wrapper-modal_active');
+    }
+
     showEditSession(data) { // открыть поп-ап обновить сессию 
         const form = this.editSessionModal.querySelector('form');
+
+        form.dataset.id_session = data.id;
+
         form.children[0].textContent = data.film_name;
 
         const sessionTime = data.session_time.split(':');
@@ -87,8 +105,14 @@ export default class RedrawSessionGrid {
         this.editSessionModal.classList.add('wrapper-modal_active');
     }
 
-    hideAddSession() { // закрыть поп-ап добавить сессию  
-        this.addSessionModal.classList.remove('wrapper-modal_active');
+    hideEditSession() {
+        const form = this.editSessionModal.querySelector('form');
+
+        form.dataset.id_session = '';
+
+        form.children[0].textContent = '';
+
+        this.editSessionModal.classList.remove('wrapper-modal_active');
     }
 
     renderSession(data) {
@@ -110,10 +134,22 @@ export default class RedrawSessionGrid {
             item.children[0].textContent = data.title;
         })
     }
-
+    
     // обновление одного сеанса
-    updateSession() {
-        // code...
+    updateSession(data) {
+        const session = this.section
+            .querySelector(`.conf-step__seances-movie[data-id="${data.id}"]`);
+
+        session.remove();
+
+        this.renderSession(data);
+    }
+
+    deleteSessions(id) {
+        console.log(id)
+        const sessions = this.section.querySelectorAll(`.conf-step__seances-movie[data-id="${id}"]`);
+
+        [...sessions].forEach(session => session.remove());
     }
 
 // ---------------- PATTERNS
@@ -142,7 +178,7 @@ export default class RedrawSessionGrid {
         const div = this.createEl('div', ['conf-step__seances-movie']);
         div.style.width = (+data.duration / 2) + 'px'; 
         div.style.left = ((+data.start_h * 60 + +data.start_m) / 2) + 'px';
-        div.dataset.of_movie = data.film_id;
+        div.dataset.id = data.id;
         const movie = this.section.querySelector(`[data-id_movie="${data.film_id}"]`);
         const color = getComputedStyle(movie).backgroundColor;
         div.style.backgroundColor = color;

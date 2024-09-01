@@ -246,6 +246,7 @@
       </div>
 
       @include('../components/__modal-film')
+      @include('../components/__modal-edit-film')
       @include('../components/__modal-add-session')
       @include('../components/__modal-edit-session')
     </section>

@@ -289,6 +289,8 @@ select {
   color: #63536C;
   padding: 12px 32px;
   margin-top: 17px;
+
+  cursor: pointer;
 }
 
 .conf-step__button.conf-step__button-accent,

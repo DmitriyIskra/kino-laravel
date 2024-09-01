@@ -235,10 +235,34 @@ class ApiAdminController extends Controller
         
     }
 
+    public function destroy_film($id) {
+        try {
+            // Удаляем старый файл вместе с директорией
+            $oldPoster = Film::query()
+            ->where('id', $id)->first('poster')->poster;
+
+            $pathOldPoster = preg_replace('/https:\/\/kinizal\//', '', $oldPoster);
+
+            preg_match('/^(img\/films\/.+)\/.+/', $pathOldPoster, $directory); 
+
+            Storage::deleteDirectory($directory[1]);
+
+            // Удаляем фильм
+            $result = Film::query()->where('id', $id)->delete();
+
+            return response()->json(['status' => $result]);
+        } catch (Exception $e) {
+            Log::error('Ошибка удаления фильма', ['body error:' => $e]);
+            return response()->json(['status' => false]);
+        }
+    }
+
 // ------------- END FILM
 
+// ------------- START SESSION
+
     /**
-     * Сохраняем сессию.
+     * Сохраняем сеанс
      */
     public function save_session_film(Request $request) 
     {
@@ -269,12 +293,64 @@ class ApiAdminController extends Controller
         }
     }
 
-    // получить все сессии
+    /**
+     * Получить все сеансы
+     */
     public function get_sessions() {
         $sessions = FilmSessions::query()->get();
 
         return response()->json(['body' => $sessions]);
     }
+
+    /**
+     * Обновляем сессию.
+     */
+    public function update_session(Request $request) {
+        try {
+            $status = FilmSessions::query()->where('id', $request->id)->update([
+                'start_h' => $request->hour,
+                'start_m' => $request->min,
+            ]);
+
+            $session = FilmSessions::query()->where('id', $request->id)->first();
+
+            if($status) {
+                return response()->json([
+                    'status' => $status,
+                    'body' => $session,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => $status,
+                    'body' => 'session not updated',
+                ]);
+            }
+        } catch (Exception $e) {
+            Log::error('ERROR UPDATE SESSION', ['Exception' => $e]);
+
+            return response()->json([
+                'status' => false,
+                'body' => "Error update session"
+            ]);
+        }
+    }
+
+    /**
+     * Удаляем сессию.
+     */
+    public function destroy_session($id) {
+        try {
+            // Удаляем фильм
+            $result = FilmSessions::query()->where('id', $id)->delete();
+
+            return response()->json(['status' => $result]);
+        } catch (Exception $e) {
+            Log::error('Ошибка удаления сеанса', ['body error:' => $e]);
+            return response()->json(['status' => false]);
+        }
+    }
+
+// ------------- END SESSION
 
     /**
      * Store a newly created resource in storage.

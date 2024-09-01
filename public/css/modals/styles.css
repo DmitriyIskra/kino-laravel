@@ -6,7 +6,7 @@
     display: none;
     padding: 3vw;
 
-    background-color: #E0DFE1;
+    background-color: #E0DFE1; 
     border: 2px solid #63536C;
 
     translate: -50% -50%;
@@ -17,6 +17,8 @@
 }
 
 .film-session__form {
+    position: relative;
+
     display: flex;
     gap: 1vw;
 
@@ -39,7 +41,15 @@
     padding-left: 7px;
 }
 
-.film-session__reset {
+.film-session__icon-reset {
+    position: absolute;
+    top: 3%;
+    right: 4%;
+
+    width: fit-content;
+
+    font-size: 3rem;
+
     cursor: pointer;
 }
 

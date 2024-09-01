@@ -40,9 +40,14 @@ Route::get('/get_film/{id}', [ApiAdminController::class, 'get_film']);
 Route::get('/get_all_films', [ApiAdminController::class, 'get_all_films']);
 // обновить фильм
 Route::post('/update_film', [ApiAdminController::class, 'update_film']);
+// удаляем фильм
+Route::delete('/destroy_film/{id}', [ApiAdminController::class, 'destroy_film']);
 
 // сохраняем сеанс
 Route::post('/save_session', [ApiAdminController::class, 'save_session_film']);
 // получить все сеансы
 Route::get('/get_sessions', [ApiAdminController::class, 'get_sessions']);
- 
+// обновить сеанс
+Route::post('/update_session', [ApiAdminController::class, 'update_session']);
+// удалить сеанс
+Route::delete('/destroy_session/{id}', [ApiAdminController::class, 'destroy_session']);
