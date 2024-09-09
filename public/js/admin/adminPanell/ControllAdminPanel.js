@@ -69,12 +69,14 @@ export default class ControllAdminPanel {
         this.redraw.price.section.addEventListener('input', this.input);
         // сетка сеансов
         this.redraw.session.section.addEventListener('click', this.click);
-
+        // модалки редактивария/добавления фильмов
         this.redraw.session.filmModal.addEventListener('submit', this.submit);
         this.redraw.session.filmEditModal.addEventListener('submit', this.submit);
-
+        // модалки редактивария/добавления сессий
         this.redraw.session.addSessionModal.addEventListener('submit', this.submit);
         this.redraw.session.editSessionModal.addEventListener('submit', this.submit);
+        // активация продаж
+        this.redraw.activation.section.addEventListener('click', this.click);
     }
 
     click(e) { 
@@ -293,6 +295,18 @@ export default class ControllAdminPanel {
                 this.redraw.session.hideEditSession();
 
                 if(result) this.redraw.session.deleteSessions(id);
+            })()
+        }
+
+
+        // --------- Открыть продажу билетов
+        if(e.target.closest('.conf-step__button-activate-sales')){
+            (async () => {
+                const response = await this.api.activation.update('activate_sales');
+
+                if(response) this.redraw.activation.ok();
+
+                if(!response) this.redraw.activation.not();
             })()
         }
     }

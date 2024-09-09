@@ -51,3 +51,6 @@ Route::get('/get_sessions', [ApiAdminController::class, 'get_sessions']);
 Route::post('/update_session', [ApiAdminController::class, 'update_session']);
 // удалить сеанс
 Route::delete('/destroy_session/{id}', [ApiAdminController::class, 'destroy_session']);
+
+// Открыть продажи
+Route::get('/activate_sales', [ApiAdminController::class, 'activate_sales']);

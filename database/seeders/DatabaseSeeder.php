@@ -28,8 +28,8 @@ class DatabaseSeeder extends Seeder
 
         Film::query()->create([
             'poster' => 'https://kinizal/img/films/vini-puh/1KWoEKLIJ7KlBDlttgoSCYYRIzjTdawJxgUY5PRZ.webp',
-            'title' => 'Вини Пух',
-            'description' => 'Вини пух странный мишка. Хрен знает чего еще написать',
+            'title' => 'Винни-Пух: месть падшего уха',
+            'description' => 'Вини пух странный мишка. Особые приметы: мягкий, желтый, любит мед',
             'duration' => '120',
             'country' => 'Россия',
         ]);
@@ -37,15 +37,15 @@ class DatabaseSeeder extends Seeder
         Film::query()->create([
             'poster' => 'https://kinizal/img/films/terminator/WbaZnQgXAQcV8ax2FxrYxKvH4JEZFIU9wE8TsTO7.png',
             'title' => 'Терминатор',
-            'description' => 'Терминатор прибыл на землю чтобы всех нахрен уничтожить да не тут то было',
+            'description' => 'Терминатор прибыл на землю чтобы всех уничтожить да не тут то было',
             'duration' => '220',
             'country' => 'США',
         ]);
 
         Film::query()->create([
             'poster' => 'https://kinizal/img/films/red-hat/G2rdetRintxL2DYZfoCH4pRI4Z6y5aM6CLqqDGwN.png',
-            'title' => 'Красная шапочка',
-            'description' => 'Продолжение блокбастера про киллера по прозвищу красная шапка и банду волков.',
+            'title' => 'Красная шляпочка',
+            'description' => 'Продолжение блокбастера про киллера по прозвищу красная шляпка и банду волков.',
             'duration' => '170',
             'country' => 'Россия, США',
         ]);

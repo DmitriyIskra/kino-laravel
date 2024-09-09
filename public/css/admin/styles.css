@@ -217,6 +217,10 @@ select {
   margin-bottom: 12px;
 }
 
+.conf-step__activation-result {
+  color: #16A6AF;
+}
+
 .conf-step__paragraph:not(:first-of-type) {
   margin-top: 35px;
 }

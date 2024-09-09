@@ -16,7 +16,7 @@ use PhpParser\Node\Stmt\TryCatch;
 class ApiAdminController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Вход в админку
      */
     public function index(Request $request)
     {
@@ -352,29 +352,7 @@ class ApiAdminController extends Controller
 
 // ------------- END SESSION
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+    
 
     /**
      * Обновление конфигурации зала.
@@ -449,6 +427,9 @@ class ApiAdminController extends Controller
         return response()->json(['resultUpdate' => $resultUpdate]);
     }
 
+    /**
+     * Обновление цен в зале.
+     */
     public function update_hall_price(Request $request)
     {
         $price_places = $request->price_places;
@@ -462,6 +443,61 @@ class ApiAdminController extends Controller
         if($result) return response()->json(['response' => true]);
         
         return response()->json(['response' => false]);
+    }
+
+
+    /**
+     * Активация продаж.
+     */
+    public function activate_sales() {
+        try {
+            $films = Film::get();
+
+            foreach($films as $film) {
+                if(!$film->is_active) {
+                    Film::query()->where('id', $film->id)->update([
+                        "is_active" => 1
+                    ]);
+                }
+            }
+
+            return response()->json(['status' => true]);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => false]);
+        }
+        
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
     }
 
     /**
