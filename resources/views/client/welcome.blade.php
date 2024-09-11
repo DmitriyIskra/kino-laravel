@@ -6,9 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>ИдёмВКино</title>
-  <link rel="stylesheet" href="css/client/normalize.css">
-  <link rel="stylesheet" href="css/client/styles.css">
+  <link rel="stylesheet" href={{ asset("css/client/normalize.css") }}>
+  <link rel="stylesheet" href={{ asset("css/client/styles.css") }}>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&amp;subset=cyrillic,cyrillic-ext,latin-ext" rel="stylesheet">
+  <script src={{ asset("js/client/app.js") }} type="module" deffer></script>
 </head>
 
 <body>
@@ -44,7 +45,6 @@
   </nav>
   
   <main> 
-    {{ dd($films[0]) }}
     @foreach ($films as $film)
       @if ($film->is_active)
         <section class="movie">
@@ -62,29 +62,21 @@
               </p>
             </div>
           </div>
-
-          <div class="movie-seances__hall">
-            <h3 class="movie-seances__hall-title">Зал 1</h3>
-            <ul class="movie-seances__list">
-              <li class="movie-seances__time-block"><a class="movie-seances__time" href="/hall">10:20</a></li>
-              <li class="movie-seances__time-block"><a class="movie-seances__time" href="/hall">14:10</a></li>
-              <li class="movie-seances__time-block"><a class="movie-seances__time" href="/hall">18:40</a></li>
-              <li class="movie-seances__time-block"><a class="movie-seances__time" href="/hall">22:00</a></li>
-            </ul>
-          </div>
-
-          <div class="movie-seances__hall">
-            <h3 class="movie-seances__hall-title">Зал 2</h3>
-            <ul class="movie-seances__list">
-              <li class="movie-seances__time-block"><a class="movie-seances__time" href="/hall">11:15</a></li>
-              <li class="movie-seances__time-block"><a class="movie-seances__time" href="/hall">14:40</a></li>
-              <li class="movie-seances__time-block"><a class="movie-seances__time" href="/hall">16:00</a></li>
-              <li class="movie-seances__time-block"><a class="movie-seances__time" href="/hall">18:30</a></li>
-              <li class="movie-seances__time-block"><a class="movie-seances__time" href="/hall">21:00</a></li>
-              <li class="movie-seances__time-block"><a class="movie-seances__time" href="/hall">23:30</a></li>     
-            </ul>
-          </div> 
-
+          {{-- {{ dd($films) }} --}}
+          @foreach ($film->sessions as $key => $items)
+              @if (count($items))
+                <div class="movie-seances__hall">
+                  <h3 class="movie-seances__hall-title">Зал {{ $key }}</h3>
+                  <ul class="movie-seances__list">
+                    @foreach ($items as $item)
+                      <li class="movie-seances__time-block">
+                        <a class="movie-seances__time" href="/hall/{{ $item->id }}/{{ $item->hall_id }}">{{ $item->start_h }}:{{$item->start_m}}</a>
+                      </li>
+                    @endforeach
+                  </ul>
+                </div>
+              @endif
+          @endforeach
         </section>
       @endif  
     @endforeach

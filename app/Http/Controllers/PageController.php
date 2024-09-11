@@ -16,29 +16,39 @@ class PageController extends Controller
     // CLIENT
     public function welcome_page() 
     {
+        // распределяем сессии по фильмам и по залам
         $films = Film::get();
-        $halls = Hall::query()->get(['number', 'id']);
-        // Log::info('halls_num', ['halls_num' => $halls]);
+        $halls = Hall::query()->get(['number', 'id', 'row', 'place']);
 
         foreach($films as $film) {
             $all_film_sessions = FilmSessions::where('film_id', $film->id)
                 ->orderBy('start_h', 'asc')
                 ->orderBy('start_m', 'asc')
                 ->get();
-            Log::info('all_film_sessions', [$all_film_sessions]);
+
+            $sessions_in_halls = [];
             foreach($halls as $hall) {
-                // Log::info('value', [$hall->number]);
+
                 $hall_num = $hall->number;
 
+                if(!isset($sessions_in_halls[$hall_num])) {
+                    $sessions_in_halls[$hall_num] = [];
+                }
+
                 foreach($all_film_sessions as $session) {
-                    // Log::info('session', [$session]);
-                    // if($session->hall_id === $hall->id) {
-                    //     $film['sessions'][$hall_num] = $session; 
-                    // }
+
+                    // если места в зале не сформированы, сессии не попадут в массив для отображения
+                    if($session->hall_id === $hall->id && $hall->row) {
+                        if(isset($sessions_in_halls[$hall_num])) {
+                            array_push($sessions_in_halls[$hall_num], $session);
+                        };
+                        
+                    }
                 };
             }
+
+            $film['sessions'] = $sessions_in_halls;
             
-            $film['sessions'] = $all_film_sessions;
         }
 
         return view('client.welcome', [
@@ -46,8 +56,37 @@ class PageController extends Controller
         ]);
     }
 
-    public function hall_page() {
-        return view('client.hall');
+    public function hall_page($sess_id, $hall_id) {
+        $hall = Hall::query()->where('id', $hall_id)->first();
+        $session = FilmSessions::query()->where('id', $sess_id)->first();
+        $places = Places::query()->where('hall_id', $hall_id)->get();
+
+        // группируем кресла по рядам
+        // [
+            // ряд: [кресло, кресло, кресло,]
+            // ряд: [кресло, кресло, кресло,]
+        // ]
+        $group_places = [];
+        if($hall->row && $hall->place) {
+            $counter = 0;
+            if($places) {
+                for($i = 0; $i < $hall->row; $i += 1) {
+                    $part = [];
+                    for($j = 0; $j < $hall->place; $j += 1) {
+                        $part[] = isset($places[$counter]) ? $places[$counter] : '';
+                        $counter += 1;
+                    }
+
+                    $group_places[] = $part;
+                }
+            }
+        }
+
+        return view('client.hall',[
+            'hall' => $hall,
+            'session' => $session,
+            'places' => $group_places,
+        ]);
     }
 
     public function payment_page() {

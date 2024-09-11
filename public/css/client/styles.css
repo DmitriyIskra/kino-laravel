@@ -203,6 +203,13 @@ body {
   cursor: pointer;
 }
 
+.not-choosed {
+  margin-top: 5px;
+
+  font-size: 2rem;
+  text-align: center;
+}
+
 .buying {
   background-color: rgba(241, 235, 230, 0.95);
   padding-bottom: 3rem;
@@ -280,12 +287,19 @@ body {
   box-sizing: border-box;
   border-radius: 4px;
 }
+
+.buying-scheme__row > .buying-scheme__chair {
+  cursor: pointer;
+}
+
 .buying-scheme__chair:not(:first-of-type) {
   margin-left: 4px;
 }
 
 .buying-scheme__chair_disabled {
   opacity: 0;
+
+  pointer-events: none;
 }
 
 .buying-scheme__chair_standart {
@@ -294,6 +308,8 @@ body {
 
 .buying-scheme__chair_taken {
   background-color: transparent;
+
+  pointer-events: none;
 }
 
 .buying-scheme__chair_vip {
