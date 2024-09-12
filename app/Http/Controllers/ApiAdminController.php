@@ -184,7 +184,7 @@ class ApiAdminController extends Controller
                 ]);
             // если передан новый постер
             if($file) {
-                $nameOrigin = $file->getClientOriginalName();
+                $nameOrigin = $file->getClientOriginalName(); 
                 $extension = $file->extension();
                 $hashName = $file->hashName();
                 $name = preg_replace("/\.$extension/i", '', $nameOrigin);

@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Film::query()->create([
-            'poster' => 'https://kinizal/img/films/terminator/WbaZnQgXAQcV8ax2FxrYxKvH4JEZFIU9wE8TsTO7.png',
+            'poster' => 'https://kinizal/img/films/terminator_v_2/1QRFBL3hY0P2jBGZY8rdJ1sCWUNbw72Yjx1TJQgo.webp',
             'title' => 'Терминатор',
             'description' => 'Терминатор прибыл на землю чтобы всех уничтожить да не тут то было',
             'duration' => '220',

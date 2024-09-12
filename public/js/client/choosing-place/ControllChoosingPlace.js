@@ -29,11 +29,19 @@ export default class ControllChoosingPlace {
             const button = e.target.closest('.acceptin-button');
             const data = this.r.storage.__get();
 
-            if(sessionStorage?.ticket) sessionStorage.clear();
             if(data.length) {
-                sessionStorage.ticket = JSON.stringify(data);
+                (async () => {
+                    try {
+                        const result = await this.api.create();
 
-                location.href = '/payment';
+                        if(result.status) {
+                            location.href = `/payment/${result.id}`;  
+                        }
+                    } catch (error) {
+                        
+                    }
+                })()
+
             };
 
             // если места не выбраны, и нажали кнопку забронировать
