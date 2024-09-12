@@ -89,7 +89,7 @@ class PageController extends Controller
         ]);
     }
 
-    public function payment_page($id) {
+    public function payment_page() {
         return view('client.payment');
     }
 

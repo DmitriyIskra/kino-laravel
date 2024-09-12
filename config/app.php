@@ -2,17 +2,25 @@
 
 return [
 
-    'providers' => [     
+    // 'providers' => [     
       
-        App\Providers\QRCodeServiceProvider::class,     
+    //     LaravelQRCode\Providers\QRCodeServiceProvider::class,     
       
-    ],
+    // ],
     
     
     // 'aliases' => [
        
     //    'QRCode' => LaravelQRCode\Facades\QRCode::class,     
           
+    // ],
+
+    // 'providers' => [
+    //     SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+    // ],
+    
+    // 'aliases' => [
+    //     'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     // ],
 
     /*

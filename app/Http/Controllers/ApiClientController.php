@@ -7,7 +7,8 @@ use App\Providers\QRCodeServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use LaravelQRCode\Facades\QRCode;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
 
 class ApiClientController extends Controller
 {
@@ -24,15 +25,20 @@ class ApiClientController extends Controller
         try {
             $data = $request->all();
 
-            
-            
+            // генерируем qr
+            $qr = QrCode::size(150)->format('png')->encoding('UTF-8')->generate('Hello my frend');
+            $name = Str::random().'.png';
+
+            Storage::put("img/qr_codes/$name", $qr);
+
+            $url = asset("img/qr_codes/$name");
             // складываем общую стоимость
 
             // собираем места в массив и JSON
  
 
             // $ticket = Ticket::query()->create([
-            //     'sess_id' => '',
+            //     'sess_id' => $data->session_id,
             //     'title' => '',
             //     'places' => '',
             //     'hall' => '',

@@ -33,8 +33,8 @@
       <div class="buying-scheme">
         <div class="buying-scheme__wrapper">
           @if ($hall->row && $hall->place)
-            @foreach ($places as $row)
-              <div class="buying-scheme__row">
+            @foreach ($places as $key => $row)
+              <div class="buying-scheme__row" data-row_num="{{ $key + 1 }}">
                   @foreach ($row as $place)
                     <span 
                       class="buying-scheme__chair buying-scheme__chair_{{$place->is_free ? $place->type : 'taken'}}"
@@ -43,6 +43,7 @@
                       data-film_id="{{ $session->film_id }}"
                       data-session_id="{{ $session->id }}"
                       data-hall_id="{{ $hall->id }}"
+                      data-row_num="{{ $key + 1 }}"
 
                       data-default_type="{{ $place->type }}"
                     ></span>

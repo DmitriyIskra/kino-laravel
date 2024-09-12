@@ -10,11 +10,12 @@ export default class RedrawChoosingPlace {
     choosePlace(element) {
         const defaultClass = element.dataset.default_type;
         const data = {
-            place_id: element.dataset.place_id,
-            price: element.dataset.price,
-            film_id: element.dataset.film_id,
-            session_id: element.dataset.session_id,
-            hall_id: element.dataset.hall_id,
+            place_id: element.dataset.place_id, // номер места
+            row_num: element.dataset.row_num, // номер зала
+            price: element.dataset.price, // стоимость для сумирования
+            film_id: element.dataset.film_id, // название
+            session_id: element.dataset.session_id, // время
+            hall_id: element.dataset.hall_id, // номер зала
         }
 
         // если есть надпись не выбраны места
