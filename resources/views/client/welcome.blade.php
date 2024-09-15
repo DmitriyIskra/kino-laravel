@@ -18,30 +18,34 @@
   </div>
 
   <header class="page-header">
-    <h1 class="page-header__title">Идём<span>в</span>кино</h1>
+    <h1 class="page-header__title"><a href="/">Идём<span>в</span>кино</a></h1>
   </header>
   
   <nav class="page-nav">
-    <a class="page-nav__day page-nav__day_today" href="#">
-      <span class="page-nav__day-week">Пн</span><span class="page-nav__day-number">31</span>
+
+    @php $days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'] @endphp
+
+    <a class="page-nav__day page-nav__day_num page-nav__day_today page-nav__day_chosen" href="#">
+      <span class="page-nav__day-week">@php echo $days[date('N') - 1] @endphp</span><span class="page-nav__day-number">{{ date('j') }}</span>
     </a>
-    <a class="page-nav__day" href="#">
-      <span class="page-nav__day-week">Вт</span><span class="page-nav__day-number">1</span>
+    <a class="page-nav__day page-nav__day_num" href="#">
+      <span class="page-nav__day-week">@php echo $days[date('N', strtotime("+1 day")) - 1] @endphp</span><span class="page-nav__day-number">{{ date('j', strtotime("+1 day")) }}</span>
     </a>
-    <a class="page-nav__day page-nav__day_chosen" href="#">
-      <span class="page-nav__day-week">Ср</span><span class="page-nav__day-number">2</span>
+    <a class="page-nav__day page-nav__day_num" href="#">
+      <span class="page-nav__day-week">@php echo $days[date('N', strtotime("+2 day")) - 1] @endphp</span><span class="page-nav__day-number">{{ date('j', strtotime("+2 day")) }}</span>
     </a>
-    <a class="page-nav__day" href="#">
-      <span class="page-nav__day-week">Чт</span><span class="page-nav__day-number">3</span>
+    <a class="page-nav__day page-nav__day_num" href="#">
+      <span class="page-nav__day-week">@php echo $days[date('N', strtotime("+3 day")) - 1] @endphp</span><span class="page-nav__day-number">{{ date('j', strtotime("+3 day")) }}</span>
     </a>
-    <a class="page-nav__day" href="#">
-      <span class="page-nav__day-week">Пт</span><span class="page-nav__day-number">4</span>
+    <a class="page-nav__day page-nav__day_num" href="#">
+      <span class="page-nav__day-week">@php echo $days[date('N', strtotime("+4 day")) - 1] @endphp</span><span class="page-nav__day-number">{{ date('j', strtotime("+4 day")) }}</span>
     </a>
-    <a class="page-nav__day page-nav__day_weekend" href="#">
-      <span class="page-nav__day-week">Сб</span><span class="page-nav__day-number">5</span>
+    <a class="page-nav__day page-nav__day_num page-nav__day_weekend" href="#">
+      <span class="page-nav__day-week">@php echo $days[date('N', strtotime("+5 day")) - 1] @endphp</span><span class="page-nav__day-number">{{ date('j', strtotime("+5 day")) }}</span>
     </a>
     <a class="page-nav__day page-nav__day_next" href="#">
     </a>
+
   </nav>
   
   <main> 

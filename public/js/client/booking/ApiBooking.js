@@ -1,4 +1,4 @@
-export default class ApiChoosingPlace {
+export default class ApiBooking {
     constructor(token) {
         this.token = token;
     }

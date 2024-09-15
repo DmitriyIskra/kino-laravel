@@ -1,4 +1,4 @@
-export default class RedrawChoosingPlace {
+export default class RedrawBooking {
     constructor(section, storage) {
         this.section = section;
         this.storage = storage;

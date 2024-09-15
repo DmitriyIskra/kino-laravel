@@ -1,4 +1,4 @@
-export default class StorageChoosingPlace {
+export default class StorageBooking {
     constructor() {
         this.storage = [];
     }

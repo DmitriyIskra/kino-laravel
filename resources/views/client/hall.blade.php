@@ -15,7 +15,7 @@
 
 <body>
   <header class="page-header">
-    <h1 class="page-header__title">Идём<span>в</span>кино</h1>
+    <h1 class="page-header__title"><a href="/">Идём<span>в</span>кино</a></h1>
   </header>
 
   <main>

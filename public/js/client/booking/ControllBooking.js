@@ -1,4 +1,4 @@
-export default class ControllChoosingPlace {
+export default class ControllBooking {
     constructor(redraw, api) {
         this.r = redraw;
         this.api = api;
@@ -22,7 +22,7 @@ export default class ControllChoosingPlace {
             this.r.choosePlace(element);
         }
 
-        // кнопка забронировать
+        // кнопка забронировать 
         if(e.target.closest('.acceptin-button')) {
             const button = e.target.closest('.acceptin-button');
             const data = this.r.storage.__get();

@@ -355,7 +355,7 @@ export default class ControllAdminPanel {
         } 
         // выключаем кнопку сохранения
         if(!objPrices?.standart && !objPrices?.vip) {
-            this.redraw.hall.stateButtonSave('off');
+            this.redraw.price.stateButtonSave('off');
         }
     }
 

@@ -36,12 +36,17 @@ body {
 
 .page-header__title {
   margin: 0;
+}
+
+.page-header__title a {
   font-weight: 900;
   font-size: 3.4rem;
   color: #ffffff;
   text-transform: uppercase;
+  text-decoration: none;
 }
-.page-header__title span {
+
+.page-header__title a span {
   font-weight: 100;
 }
 

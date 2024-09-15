@@ -16,7 +16,7 @@ export default class RedrawConfigureHall {
         this.save = this.section.querySelector('.configure-hall__accent');
 
         // Кнопка отмена
-        this.reset = this.section.querySelector('.configure-hall__reset');
+        this.reset = this.section.querySelector('.configure-hall__reset'); 
     }
 
 
@@ -65,6 +65,7 @@ export default class RedrawConfigureHall {
 
     // активация/деактивация кнопки сохранения
     stateButtonSave(state) {
+        console.log(state)
         if(state === 'off') this.save.classList.add('conf-step__button-accent_disabled');
         if(state === 'on') this.save.classList.remove('conf-step__button-accent_disabled');
     }

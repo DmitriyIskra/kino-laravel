@@ -78,7 +78,6 @@ export default class RedrawSessionGrid {
         if(select.children.length) select.innerHTML = '';
 
         data.forEach(film => {
-            console.log(film.title)
             const option = this.createEl('option', null, null, film.title);
             option.value = film.id;
             select.append(option);
