@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Route;
 // CLIENT PAGES
 Route::get('/', [PageController::class, 'welcome_page'])->name('client_welcome');
 Route::get('/hall/{sess_id}/{hall_id}', [PageController::class, 'hall_page'])->name('client_hall');
-Route::get('/payment', [PageController::class, 'payment_page'])->name('client_payment');
-Route::get('/ticket', [PageController::class, 'ticket_page'])->name('client_ticket');
+Route::get('/payment/{id}', [PageController::class, 'payment_page'])->name('client_payment');
+Route::get('/ticket/{id}', [PageController::class, 'ticket_page'])->name('client_ticket');
 
 Route::post('/booking', [ApiClientController::class, 'booking']);
 

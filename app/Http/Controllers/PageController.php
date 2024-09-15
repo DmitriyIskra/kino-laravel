@@ -6,6 +6,7 @@ use App\Models\Film;
 use App\Models\FilmSessions;
 use App\Models\Hall;
 use App\Models\Places;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -89,12 +90,38 @@ class PageController extends Controller
         ]);
     }
 
-    public function payment_page() {
-        return view('client.payment');
+    public function payment_page($id) {
+        $ticket = Ticket::query()->where('id', $id)->first();
+
+        $places_with_rows = json_decode($ticket->places);
+        $arr_places = [];
+        foreach($places_with_rows as $value) {
+            $arr_places[] = $value->chair_num;
+        } 
+
+        $places = implode(', ', $arr_places);
+        $ticket['places_string'] = $places;
+
+        return view('client.payment', [
+            'ticket' => $ticket,
+        ]);
     }
 
-    public function ticket_page() {
-        return view('client.ticket');
+    public function ticket_page($id) {
+        $ticket = Ticket::query()->where('id', $id)->first();
+
+        $places_with_rows = json_decode($ticket->places);
+        $arr_places = [];
+        foreach($places_with_rows as $value) {
+            $arr_places[] = $value->chair_num;
+        } 
+
+        $places = implode(', ', $arr_places);
+        $ticket['places_string'] = $places;
+
+        return view('client.ticket', [
+            'ticket' => $ticket,
+        ]);
     }
 
     // ADMIN

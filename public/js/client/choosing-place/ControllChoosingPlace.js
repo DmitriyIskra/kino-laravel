@@ -32,7 +32,7 @@ export default class ControllChoosingPlace {
             if(data.length) {
                 (async () => {
                     try {
-                        const result = await this.api.create();
+                        const result = await this.api.create(data);
 
                         if(result.status) {
                             location.href = `/payment/${result.id}`;  

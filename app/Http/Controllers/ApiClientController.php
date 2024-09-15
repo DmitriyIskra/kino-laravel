@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FilmSessions;
+use App\Models\Hall;
+use App\Models\Places;
 use App\Models\Ticket;
 use App\Providers\QRCodeServiceProvider;
 use Illuminate\Http\Request;
@@ -17,40 +20,61 @@ class ApiClientController extends Controller
      * */ 
     public function booking(Request $request)
     {
-        // place_id
-        // price
-        // film_id
-        // session_id
-        // hall_id
-        try {
+        try { 
             $data = $request->all();
-
+            $session = FilmSessions::query()->where('id', $data[0]['session_id'])->first();
+            // складываем общую стоимость
+            $cost = 0;
+            // собираем места в массив и JSON
+            $places = [];
+            // генерируем массив для строки QR
+            $arr_places_for_qr = [];
+            // id сеанса
+            $id_session = $session->id;
+            // title сеанса
+            $title_session = $session->film_name;
+            // начало сеанса
+            $start_session = "$session->start_h:$session->start_m";
+            // зал в котором будет проходить сеанс
+            $hall = Hall::query()->where('id', $data[0]['hall_id'])->first();
+            
+            
+            foreach($data as $value) {
+                $cost += (float)$value['price']; // общая стоимость билета
+                
+                $place = Places::query()->where('id', $value['place_id'])->first();
+                $chair_num = $place->chair_num;
+                $places[] = ['row' => $value['row_num'], 'chair_num' => $chair_num];
+                
+                $arr_places_for_qr[] = "Ряд: {$value['row_num']}, "."место: $chair_num, "."сеанс: $title_session, "."начало: $start_session";
+            }
+ 
             // генерируем qr
-            $qr = QrCode::size(150)->format('png')->encoding('UTF-8')->generate('Hello my frend');
+            $string_for_qr = implode('; ', $arr_places_for_qr);
+            $qr = QrCode::size(150)->format('png')->encoding('UTF-8')->generate($string_for_qr);
             $name = Str::random().'.png';
 
             Storage::put("img/qr_codes/$name", $qr);
 
             $url = asset("img/qr_codes/$name");
-            // складываем общую стоимость
 
-            // собираем места в массив и JSON
- 
 
-            // $ticket = Ticket::query()->create([
-            //     'sess_id' => $data->session_id,
-            //     'title' => '',
-            //     'places' => '',
-            //     'hall' => '',
-            //     'start' => '',
-            //     'price' => '',
-            // ]);
+            $ticket = Ticket::query()->create([
+                'sess_id' => $id_session,
+                'title' => $title_session,
+                'places' => json_encode($places),
+                'hall' => $hall->number,
+                'start' => $start_session,
+                'price' => $cost,
+                'qr' => $url,
+            ]);
 
             return response()->json([
-                'status' => false,
-                'id' => '12',
+                'status' => true,
+                'id' => $ticket->id,
             ]);
         } catch (\Throwable $th) {
+            Log::info('ERROR BOOKING');
             return response()->json([
                 'status' => false,
                 'id' => '',

@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('sess_id')->unsigned();
+            $table->text('qr')->nullable();
+            $table->bigInteger('sess_id')->unsigned(); 
             $table->foreign('sess_id')->references('id')->on('film_sessions')->onDelete('cascade');
             $table->text('title')->nullable();
             $table->json('places')->nullable();
             $table->integer('hall')->nullable();
             $table->string('start')->nullable();
             $table->decimal('price')->nullable();
-            $table->text('qr')->nullable();
             $table->timestamps();
         });
     }
