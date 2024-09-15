@@ -5,11 +5,6 @@ import ApiChoosingPlace from "./choosing-place/ApiChoosingPlace.js";
 
 const token = document.querySelector('meta[name="csrf-token"]')?.content;
 
-const welcome = document.querySelector('.movie');
-
-if(welcome) {
-    sessionStorage.clear();
-}
 
 // Выбор мест (страница)
 const choosingPlase = document.querySelector('.buying');

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('place')->nullable();
             $table->decimal('price_standart')->nullable();
             $table->decimal('price_vip')->nullable();
-            $table->json('sessions')->nullable();
 
             $table->timestamps();
         });

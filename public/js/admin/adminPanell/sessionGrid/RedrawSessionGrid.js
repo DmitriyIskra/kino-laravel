@@ -149,7 +149,7 @@ export default class RedrawSessionGrid {
         console.log(id)
         const sessions = this.section.querySelectorAll(`.conf-step__seances-movie[data-id="${id}"]`);
 
-        [...sessions].forEach(session => session.remove());
+        [...sessions].forEach(session => session.remove()); 
     }
 
 // ---------------- PATTERNS
@@ -179,6 +179,7 @@ export default class RedrawSessionGrid {
         div.style.width = (+data.duration / 2) + 'px'; 
         div.style.left = ((+data.start_h * 60 + +data.start_m) / 2) + 'px';
         div.dataset.id = data.id;
+        div.dataset.of_movie = data.film_id;
         const movie = this.section.querySelector(`[data-id_movie="${data.film_id}"]`);
         const color = getComputedStyle(movie).backgroundColor;
         div.style.backgroundColor = color;

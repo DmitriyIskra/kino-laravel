@@ -19,7 +19,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('duration')->nullable();
             $table->string('country')->nullable();
-            $table->json('halls_id')->nullable();
 
             $table->timestamps();
         });

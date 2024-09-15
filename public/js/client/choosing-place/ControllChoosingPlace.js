@@ -8,8 +8,6 @@ export default class ControllChoosingPlace {
 
     init() {
         this.registerEvents();
-
-        sessionStorage.clear();
     }
 
     registerEvents() {
