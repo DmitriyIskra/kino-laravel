@@ -57,7 +57,7 @@ class PageController extends Controller
         ]);
     }
 
-    public function hall_page($sess_id, $hall_id) {
+    public function hall_page($sess_id, $hall_id, $date) {
         $hall = Hall::query()->where('id', $hall_id)->first();
         $session = FilmSessions::query()->where('id', $sess_id)->first();
         $places = Places::query()->where('hall_id', $hall_id)->get();
@@ -69,7 +69,7 @@ class PageController extends Controller
         // ]
         $group_places = [];
         if($hall->row && $hall->place) {
-            $counter = 0;
+            $counter = 0; 
             if($places) {
                 for($i = 0; $i < $hall->row; $i += 1) {
                     $part = [];
@@ -87,6 +87,7 @@ class PageController extends Controller
             'hall' => $hall,
             'session' => $session,
             'places' => $group_places,
+            'date_of_booking' => $date,
         ]);
     }
 

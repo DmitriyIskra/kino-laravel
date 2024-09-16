@@ -25,9 +25,12 @@ export default class ControllBooking {
         // кнопка забронировать 
         if(e.target.closest('.acceptin-button')) {
             const button = e.target.closest('.acceptin-button');
-            const data = this.r.storage.__get();
+            const date = button.dataset.date_of_booking;
+            const places = this.r.storage.__get();
+            
+            const data = {places, date};
 
-            if(data.length) {
+            if(data.places.length) {
                 (async () => {
                     try {
                         const result = await this.api.create(data);

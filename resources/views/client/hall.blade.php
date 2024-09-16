@@ -64,7 +64,7 @@
         </div>
       </div>
       <p class="not-choosed"></p>
-      <button class="acceptin-button" >Забронировать</button>
+      <button class="acceptin-button" data-date_of_booking="{{ $date_of_booking }}">Забронировать</button>
     </section>     
   </main>
   

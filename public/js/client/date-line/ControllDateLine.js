@@ -9,6 +9,9 @@ export default class ControllDateLine {
 
     init() {
         this.registerEvents();
+
+        // устанавливаем дату в сессии
+        this.r.changeLinks(this.parseDate(this.r.firstElementDate));
     }
 
     registerEvents() {
@@ -19,7 +22,8 @@ export default class ControllDateLine {
         // меняем дату по нажатию на конкретную дату
         if(e.target.closest('.page-nav__day_num')) {
             const target = e.target.closest('.page-nav__day_num');
-
+            // блокировка если клик по активной кнопке
+            if(target === this.lastActiveDate) return;
             // меняем активную дату и сразу перерегистриуем lastActiveDate
             this.lastActiveDate = this.r.changeDate(this.lastActiveDate, target);
         }
@@ -31,5 +35,12 @@ export default class ControllDateLine {
             // меняем активную дату и сразу перерегистриуем lastActiveDate
             this.lastActiveDate = this.r.changeDate(this.lastActiveDate, nextDate);
         }
+
+        // устанавливаем дату в сессии
+        this.r.changeLinks(this.parseDate(this.lastActiveDate));
+    }
+
+    parseDate(el){
+        return el.querySelector('.page-nav__day-number').textContent;
     }
 }

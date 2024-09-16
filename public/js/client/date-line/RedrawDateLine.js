@@ -6,7 +6,7 @@ export default class RedrawDateLine {
         this.firstElementDate = 
             this.section.querySelectorAll('.page-nav__day_num')[0];
         // ссылки с сеансами
-        this.linksOfSessions = this.section.querySelectorAll('.page-nav__day_num');
+        this.linksOfSessions = document.querySelectorAll('.movie-seances__time');
     }
 
     changeDate(lastDate, newDate) {
@@ -18,15 +18,33 @@ export default class RedrawDateLine {
         return newDate;
     }
 
-    changeLinks(date) {
-        // СНАЧАЛА установить стартовые значения в ссылки с сессиями с помощью php и blade
-        // дальше будем в контроллере получать дату 
-        // скрыто ее устанавливать на страницу
-        // после нажатия забронировать добавлять в данные, одним разом, чтоб не в каждом выборе места, а один раз
-        // на сервере получать и добавлять в билет
-            // для этого добавить в миграцию дату бронирование
-        // а также добавлять в qr чтоб там тоже была конкретная дата
+    // прописывает выбранную дату в ссылку как параметр
+    changeLinks(number) {
+        const date = new Date();
+        const month = date.getMonth().toString().padStart(2, 0);
+        const year = date.getFullYear();
 
-        // ПОСЛЕ ВСЕГО НЕ ЗАБЫТЬ НАПИСАТЬ ИНСТРУКЦИЮ
+        const fullDate = `${number}.${month}.${year}`;
+        
+        // перебираем ссылки с сессиями
+        [...this.linksOfSessions].forEach(session => {
+            let href = session.href;
+            session.href = ''; // очищаем
+
+            const regExp = /https:\/\/kinizal\/hall\/\d{1,3}\/\d{1,2}\/\d{2}\.\d{2}\.\d{4}$/;
+
+            const result = regExp.test(href);
+
+            // если дата уже была установлена
+            if(result) {
+                const regExp = /(https:\/\/kinizal\/hall\/\d{1,3}\/\d{1,2}\/)(\d{2}\.\d{2}\.\d{4}$)/;
+                href = href.replace(regExp, `$1${fullDate}`);
+                session.href = href;
+                return;
+            }
+            
+            // если дата устанавливается впервые
+            session.href = `${href}/${fullDate}`;
+        })
     }
 }
