@@ -46,7 +46,7 @@ export default class ControllBooking {
             };
 
             // если места не выбраны, и нажали кнопку забронировать
-            if(!data.length) {
+            if(!data.places.length) {
                 const notChoosed = button.previousElementSibling;
                 
                 this.r.__notChoosed();

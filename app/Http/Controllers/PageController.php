@@ -61,6 +61,31 @@ class PageController extends Controller
         $hall = Hall::query()->where('id', $hall_id)->first();
         $session = FilmSessions::query()->where('id', $sess_id)->first();
         $places = Places::query()->where('hall_id', $hall_id)->get();
+        
+        // получаем билеты по выбранному сеансу
+        $tickets = Ticket::query()->where('sess_id', $sess_id)->get('places');
+        
+        // определяем занятость места в полученном массиве мест
+        if($tickets) {
+            // из билетов по сеансу выделяем места (это будут занятые места)
+            $nums_occupied_places = [];
+            foreach($tickets as $ticket) {
+                $ticket_dec = json_decode($ticket->places);
+                foreach($ticket_dec as $chair) {
+                    $nums_occupied_places[] = $chair->chair_num;
+                }
+            }
+
+            // перебераем полученные места по залу и ищем совпадения
+            foreach($places as $place) {
+                $chair_num = $place->chair_num;
+
+                $result = in_array($chair_num, $nums_occupied_places);
+
+                if($result) $place->is_free = 0;
+            }
+        }
+
 
         // группируем кресла по рядам
         // [
@@ -82,6 +107,7 @@ class PageController extends Controller
                 }
             }
         }
+
 
         return view('client.hall',[
             'hall' => $hall,

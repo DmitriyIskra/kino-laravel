@@ -47,6 +47,7 @@ class ApiClientController extends Controller
                 $cost += (float)$value['price']; // общая стоимость билета
                 
                 $place = Places::query()->where('id', $value['place_id'])->first();
+
                 $chair_num = $place->chair_num;
                 $places[] = ['row' => $value['row_num'], 'chair_num' => $chair_num];
                 
