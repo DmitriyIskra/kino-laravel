@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text('qr')->nullable();
             $table->bigInteger('sess_id')->unsigned(); 
             $table->foreign('sess_id')->references('id')->on('film_sessions')->onDelete('cascade');
+            $table->text('date')->nullable();
             $table->text('title')->nullable();
             $table->json('places')->nullable();
             $table->integer('hall')->nullable();

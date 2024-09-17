@@ -71,20 +71,21 @@ class ApiClientController extends Controller
 
         // ПОСЛЕ ВСЕГО НЕ ЗАБЫТЬ НАПИСАТЬ ИНСТРУКЦИЮ
 
-            // $ticket = Ticket::query()->create([
-            //     'sess_id' => $id_session,
-            //     'title' => $title_session,
-            //     'places' => json_encode($places),
-            //     'hall' => $hall->number,
-            //     'start' => $start_session,
-            //     'price' => $cost,
-            //     'qr' => $url,
-            // ]);
+            $ticket = Ticket::query()->create([
+                'sess_id' => $id_session,
+                'date' => $date_of_booking,
+                'title' => $title_session,
+                'places' => json_encode($places),
+                'hall' => $hall->number,
+                'start' => $start_session,
+                'price' => $cost,
+                'qr' => $url,
+            ]);
 
-            // return response()->json([
-            //     'status' => true,
-            //     'id' => $ticket->id,
-            // ]);
+            return response()->json([
+                'status' => true,
+                'id' => $ticket->id,
+            ]);
         } catch (\Throwable $th) {
             Log::info('ERROR BOOKING');
             return response()->json([

@@ -12,6 +12,7 @@ class Ticket extends Model
     protected $fillable = [
         'qr',
         'sess_id', 
+        'date',
         'title',
         'places',
         'hall',
