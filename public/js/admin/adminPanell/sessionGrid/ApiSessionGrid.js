@@ -6,7 +6,7 @@ export default class ApiSessionGrid {
     async create(action, data) {
         if(action === 'film') {
             try {
-                const response  = await fetch('/save_film', {
+                const response  = await fetch('/save-film', {
                     method : "POST",
                     headers : {
                         "X-CSRF-TOKEN" : this.token,
@@ -24,7 +24,7 @@ export default class ApiSessionGrid {
 
         if(action === 'session') {
             try {
-                const response  = await fetch('/save_session', {
+                const response  = await fetch('/save-session', {
                     method : "POST",
                     headers : {
                         "X-CSRF-TOKEN" : this.token,
@@ -44,7 +44,7 @@ export default class ApiSessionGrid {
     async read(action, id = null) {
         if(action === 'all_sessions') {
             try {
-                const response = await fetch('/get_sessions');
+                const response = await fetch('/get-sessions');
 
                 const result = await response.json();
 
@@ -56,7 +56,7 @@ export default class ApiSessionGrid {
 
         if(action === 'film') {
             try {
-                const response = await fetch(`/get_film/${id}`);
+                const response = await fetch(`/get-film/${id}`);
 
                 const result = await response.json();
 
@@ -68,7 +68,7 @@ export default class ApiSessionGrid {
 
         if(action === 'films') {
             try {
-                const response = await fetch(`/get_all_films`);
+                const response = await fetch(`/get-all-films`);
 
                 const result = await response.json();
                 
@@ -84,7 +84,7 @@ export default class ApiSessionGrid {
     async update(action, data) {
         if(action === 'film') {
             try {
-                const response = await fetch('update_film', {
+                const response = await fetch('update-film', {
                     method : "POST",
                     headers : {
                         "X-CSRF-TOKEN" : this.token,
@@ -102,7 +102,7 @@ export default class ApiSessionGrid {
 
         if(action === 'session') {
             try {
-                const response = await fetch('/update_session', {
+                const response = await fetch('/update-session', {
                     method : "POST",
                     headers : {
                         "X-CSRF-TOKEN" : this.token,
@@ -122,7 +122,7 @@ export default class ApiSessionGrid {
     async delete(action, id) {
         if(action === 'film') {
             try {
-                const response = await fetch(`/destroy_film/${id}`, {
+                const response = await fetch(`/destroy-film/${id}`, {
                     method : 'DELETE',
                     headers : {
                         "X-CSRF-TOKEN" : this.token,
@@ -139,7 +139,7 @@ export default class ApiSessionGrid {
 
         if(action === 'session') {
             try {
-                const response = await fetch(`/destroy_session/${id}`, {
+                const response = await fetch(`/destroy-session/${id}`, {
                     method : 'DELETE',
                     headers : {
                         "X-CSRF-TOKEN" : this.token,

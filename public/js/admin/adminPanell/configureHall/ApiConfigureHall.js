@@ -10,7 +10,7 @@ export default class ApiConfigureHall {
     async read(action, id) {
         if(action === 'hall') { 
             try {
-                const response = await fetch(`/get_data_hall/${id}`);
+                const response = await fetch(`/get-data-hall/${id}`);
 
                 const result = await response.json();
                 const data = {...result.hall, chairs : result.chairs};
@@ -28,7 +28,7 @@ export default class ApiConfigureHall {
 
     async update(data) {
         try {
-            const response = await fetch('/update_hall_places', {
+            const response = await fetch('/update-hall-places', {
                 method : "POST",
                 headers : {
                     "X-CSRF-TOKEN" : this.token,

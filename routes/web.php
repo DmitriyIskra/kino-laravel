@@ -6,54 +6,54 @@ use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
 // CLIENT PAGES
-Route::get('/', [PageController::class, 'welcome_page'])->name('client_welcome');
-Route::get('/hall/{sess_id}/{hall_id}/{date}', [PageController::class, 'hall_page'])->name('client_hall');
-Route::get('/payment/{id}', [PageController::class, 'payment_page'])->name('client_payment');
-Route::get('/ticket/{id}', [PageController::class, 'ticket_page'])->name('client_ticket');
+Route::get('/', [PageController::class, 'welcomePage'])->name('client_welcome');
+Route::get('/hall/{sess_id}/{hall_id}/{date}', [PageController::class, 'hallPage'])->name('client_hall');
+Route::get('/payment/{id}', [PageController::class, 'paymentPage'])->name('client_payment');
+Route::get('/ticket/{id}', [PageController::class, 'ticketPage'])->name('client_ticket');
 
 Route::post('/booking', [ApiClientController::class, 'booking']);
 
 // ADMIN
-Route::get('/login', [PageController::class, 'login_page'])->name('admin_login');
-Route::get('/admin', [PageController::class, 'admin_page'])->name('admin_welcome');
+Route::get('/login', [PageController::class, 'loginPage'])->name('admin_login');
+Route::get('/admin', [PageController::class, 'adminPage'])->name('admin_welcome');
 
 Route::post('/login', [ApiAdminController::class, 'index']); 
 
 // создать или удалить зал
-Route::get('/create_hall', [ApiAdminController::class, 'create_hall']);
-Route::get('/delete-hall/{id}', [ApiAdminController::class, 'delete_hall']);
+Route::get('/create-hall', [ApiAdminController::class, 'createHall']);
+Route::get('/delete-hall/{id}', [ApiAdminController::class, 'deleteHall']);
 
 // получить данные о зале и местах
-Route::get('/get_data_hall/{id}', [ApiAdminController::class, 'get_data_hall']);
+Route::get('/get-data-hall/{id}', [ApiAdminController::class, 'getDataHall']);
 
 // сохранить/обновить данные о зале и местах
-Route::post('/update_hall_places', [ApiAdminController::class, 'update_hall_configure']);
+Route::post('/update-hall-places', [ApiAdminController::class, 'updateHallConfigure']);
 
 // обновить данные о ценах
-Route::post('/update_hall_price', [ApiAdminController::class, 'update_hall_price']);
+Route::post('/update-hall-price', [ApiAdminController::class, 'updateHallPrice']);
 
 // получение данных о ценах
-Route::get('/get_price/{id}', [ApiAdminController::class, 'get_prices']);
+Route::get('/get-price/{id}', [ApiAdminController::class, 'getPrices']);
 
 // сохраняем фильм
-Route::post('/save_film', [ApiAdminController::class, 'save_film']);
+Route::post('/save-film', [ApiAdminController::class, 'saveFilm']);
 // получить фильм
-Route::get('/get_film/{id}', [ApiAdminController::class, 'get_film']);
-// получить все фильмы
-Route::get('/get_all_films', [ApiAdminController::class, 'get_all_films']);
+Route::get('/get-film/{id}', [ApiAdminController::class, 'getFilm']);
+// получить все фильмы 
+Route::get('/get-all-films', [ApiAdminController::class, 'getAllFilms']);
 // обновить фильм
-Route::post('/update_film', [ApiAdminController::class, 'update_film']);
+Route::post('/update-film', [ApiAdminController::class, 'updateFilm']);
 // удаляем фильм
-Route::delete('/destroy_film/{id}', [ApiAdminController::class, 'destroy_film']);
+Route::delete('/destroy-film/{id}', [ApiAdminController::class, 'destroyFilm']);
 
 // сохраняем сеанс
-Route::post('/save_session', [ApiAdminController::class, 'save_session_film']);
+Route::post('/save-session', [ApiAdminController::class, 'saveSessionFilm']);
 // получить все сеансы
-Route::get('/get_sessions', [ApiAdminController::class, 'get_sessions']);
+Route::get('/get-sessions', [ApiAdminController::class, 'getSessions']);
 // обновить сеанс
-Route::post('/update_session', [ApiAdminController::class, 'update_session']);
+Route::post('/update-session', [ApiAdminController::class, 'updateSession']);
 // удалить сеанс
-Route::delete('/destroy_session/{id}', [ApiAdminController::class, 'destroy_session']);
+Route::delete('/destroy-session/{id}', [ApiAdminController::class, 'destroySession']);
 
 // Открыть продажи
-Route::get('/activate_sales', [ApiAdminController::class, 'activate_sales']);
+Route::get('/activate-sales', [ApiAdminController::class, 'activateSales']);

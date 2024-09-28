@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Film;
-use App\Models\FilmSessions;
+use App\Models\FilmSession;
 use App\Models\Hall;
-use App\Models\Places;
+use App\Models\Place;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,13 +36,13 @@ class ApiAdminController extends Controller
     /**
      * Получение данных о местах и их количестве и рядах.
      */
-    public function get_data_hall($id) {
+    public function getDataHall($id) {
         $hall = Hall::where('id', $id)->first(['row', 'place']);
 
         // группируем кресла по рядам
         $places = null;
 
-        $arrPlaces = Places::where('hall_id', $id)->get();
+        $arrPlaces = Place::where('hall_id', $id)->get();
         $counter = 0;
         if($arrPlaces) {
             $chairs = [];
@@ -64,7 +64,7 @@ class ApiAdminController extends Controller
     /**
      * Получение цен.
      */
-    public function get_prices($id) {
+    public function getPrices($id) {
         $result = Hall::where('id', $id)->first(['price_standart', 'price_vip']);
 
         return response()->json($result);
@@ -72,7 +72,7 @@ class ApiAdminController extends Controller
     /**
      * Создать и удалить зал.
      */
-    public function create_hall() 
+    public function createHall() 
     {   
         $oldest = Hall::query()->latest()->first();
         if($oldest) {
@@ -85,7 +85,7 @@ class ApiAdminController extends Controller
 
         return to_route('admin_welcome');
     }
-    public function delete_hall($id)
+    public function deleteHall($id)
     {
         $result = Hall::query()->where('id', $id)->delete();
 
@@ -96,7 +96,7 @@ class ApiAdminController extends Controller
     /**
      * Получаем фильм.
      */
-    public function get_film($id) {
+    public function getFilm($id) {
  
         $film = Film::query()->where('id', $id)->first();
  
@@ -106,7 +106,7 @@ class ApiAdminController extends Controller
     /**
      * Получаем все доступные фильмы
      */ 
-    public function get_all_films() {
+    public function getAllFilms() {
         try {
             $films = Film::get();
 
@@ -127,7 +127,7 @@ class ApiAdminController extends Controller
     /**
      * Сохраняем фильм.
      */
-    public function save_film(Request $request)
+    public function saveFilm(Request $request)
     {
         $file = $request->poster;
 
@@ -170,7 +170,7 @@ class ApiAdminController extends Controller
     /**
      * Обновляем фильм фильм.
      */
-    public function update_film(Request $request) {
+    public function updateFilm(Request $request) {
         try {
             $file = isset($request->poster) ? $request->poster : null;
 
@@ -215,7 +215,7 @@ class ApiAdminController extends Controller
                 ->where('id', $request->film_id)
                 ->first();
             
-            FilmSessions::query()
+            FilmSession::query()
                 ->where('film_id', $request->film_id)
                 ->update([
                     'duration' => $film->duration,
@@ -235,7 +235,7 @@ class ApiAdminController extends Controller
         
     }
 
-    public function destroy_film($id) {
+    public function destroyFilm($id) {
         try {
             // Удаляем старый файл вместе с директорией
             $oldPoster = Film::query()
@@ -264,12 +264,12 @@ class ApiAdminController extends Controller
     /**
      * Сохраняем сеанс
      */
-    public function save_session_film(Request $request) 
+    public function saveSessionFilm(Request $request) 
     {
         try {
             $film = Film::query()->where('id', $request->film)->first(['duration', 'title']);
     
-            $session = FilmSessions::query()->create([
+            $session = FilmSession::query()->create([
                 'film_id' => $request->film,
                 'hall_id' => $request->id_hall,
                 'start_h' => $request->hour,
@@ -296,8 +296,8 @@ class ApiAdminController extends Controller
     /**
      * Получить все сеансы
      */
-    public function get_sessions() {
-        $sessions = FilmSessions::query()->get();
+    public function getSessions() {
+        $sessions = FilmSession::query()->get();
 
         return response()->json(['body' => $sessions]);
     }
@@ -305,14 +305,14 @@ class ApiAdminController extends Controller
     /**
      * Обновляем сессию.
      */
-    public function update_session(Request $request) {
+    public function updateSession(Request $request) {
         try {
-            $status = FilmSessions::query()->where('id', $request->id)->update([
+            $status = FilmSession::query()->where('id', $request->id)->update([
                 'start_h' => $request->hour,
                 'start_m' => $request->min,
             ]);
 
-            $session = FilmSessions::query()->where('id', $request->id)->first();
+            $session = FilmSession::query()->where('id', $request->id)->first();
 
             if($status) {
                 return response()->json([
@@ -338,10 +338,10 @@ class ApiAdminController extends Controller
     /**
      * Удаляем сессию.
      */
-    public function destroy_session($id) {
+    public function destroySession($id) {
         try {
             // Удаляем фильм
-            $result = FilmSessions::query()->where('id', $id)->delete();
+            $result = FilmSession::query()->where('id', $id)->delete();
 
             return response()->json(['status' => $result]);
         } catch (Exception $e) {
@@ -357,7 +357,7 @@ class ApiAdminController extends Controller
     /**
      * Обновление конфигурации зала.
      */
-    public function update_hall_configure(Request $request)
+    public function updateHallConfigure(Request $request)
     {
         $id_hall = $request->id_hall;
         $amount_places = $request->amount_places;
@@ -379,7 +379,7 @@ class ApiAdminController extends Controller
         // кресел в зале (по данным БД), значит нужно их уменьшить (лишние удалить) 
         foreach ($places as $item) {
             foreach ($item as $value) {
-                $place = Places::query()->where('chair_num', $value['chair_num'])->where('hall_id', $id_hall)->first();
+                $place = Place::query()->where('chair_num', $value['chair_num'])->where('hall_id', $id_hall)->first();
 
                 $params = [
                     'hall_id' => $id_hall,
@@ -388,9 +388,9 @@ class ApiAdminController extends Controller
                 ];
 
                 if(!$place) {
-                    $resultPlaces = Places::create($params);
+                    $resultPlaces = Place::create($params);
                 } else {
-                    $resultPlaces = Places::query()
+                    $resultPlaces = Place::query()
                         ->where('chair_num', $value['chair_num'])
                         ->where('hall_id', $id_hall)
                         ->update($params);
@@ -410,11 +410,11 @@ class ApiAdminController extends Controller
                     }
                 }
 
-                $allHallPlaces = Places::where('hall_id', $id_hall)->get();
+                $allHallPlaces = Place::where('hall_id', $id_hall)->get();
                 if(count($allHallPlaces) > $counterUpdatedChairs) {
                     foreach ($allHallPlaces as $item) {
                         if (!in_array($item->chair_num, $chairNums)) {
-                            Places::where('hall_id', $id_hall)
+                            Place::where('hall_id', $id_hall)
                                 ->where('chair_num', $item->chair_num)
                                 ->delete();
                         }
@@ -430,7 +430,7 @@ class ApiAdminController extends Controller
     /**
      * Обновление цен в зале.
      */
-    public function update_hall_price(Request $request)
+    public function updateHallPrice(Request $request)
     {
         $price_places = $request->price_places;
 
@@ -449,7 +449,7 @@ class ApiAdminController extends Controller
     /**
      * Активация продаж.
      */
-    public function activate_sales() {
+    public function activateSales() {
         try {
             $films = Film::get();
 

@@ -341,7 +341,7 @@ export default class ControllAdminPanel {
         let objPrices = null;
 
         if(e.target.closest('.conf-step__input-standart') 
-        || e.target.closest('.conf-step__input-vip')) {
+        || e.target.closest('.conf-step__input-vip')) { 
             objPrices = this.parsePrice();
         }
 

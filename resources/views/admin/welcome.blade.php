@@ -43,7 +43,7 @@
               <li>Доступных залов нет.</li>
           @endif
         </ul>
-        <a class="conf-step__button conf-step__button-accent conf-step__create-hall-button" href="/create_hall">Создать зал</a>
+        <a class="conf-step__button conf-step__button-accent conf-step__create-hall-button" href="/create-hall">Создать зал</a>
       </div>
     </section>
     
@@ -218,7 +218,7 @@
                     <h3 class="conf-step__movie-title">{{ $item->title }}</h3>
                     <p class="conf-step__movie-duration">{{ $item->duration }} минут</p>
                   </div>
-
+ 
               @endforeach
           @endif         
         </div>

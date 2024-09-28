@@ -9,7 +9,7 @@ export default class ApiConfigurePrice {
 
     async read(id) {
         try {
-            const response = await fetch(`/get_price/${id}`);
+            const response = await fetch(`/get-price/${id}`);
 
             const result = await response.json();
    
@@ -25,7 +25,7 @@ export default class ApiConfigurePrice {
 
     async update(data) {
         try {
-            const response = await fetch('/update_hall_price', {
+            const response = await fetch('/update-hall-price', {
                 method : "POST",
                 headers : {
                     "X-CSRF-TOKEN" : this.token,

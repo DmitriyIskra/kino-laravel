@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\FilmSessions;
+use App\Models\FilmSession;
 use App\Models\Hall;
-use App\Models\Places;
+use App\Models\Place;
 use App\Models\Ticket;
 use App\Providers\QRCodeServiceProvider;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class ApiClientController extends Controller
         try {  
             $data = $request->all();
 
-            $session = FilmSessions::query()->where('id', $data['places'][0]['session_id'])->first();
+            $session = FilmSession::query()->where('id', $data['places'][0]['session_id'])->first();
             // складываем общую стоимость
             $cost = 0;
             // собираем места в массив и JSON
@@ -40,13 +40,13 @@ class ApiClientController extends Controller
             $hall = Hall::query()->where('id', $data['places'][0]['hall_id'])->first();
             // дата бронирования
             $date_of_booking = $request->date;
-            $arr_places_for_qr[] = "Дата: {$date_of_booking}";
+            $arr_places_for_qr[] = "Дата: {$date_of_booking}"; 
             
             
             foreach($data['places'] as $value) {
                 $cost += (float)$value['price']; // общая стоимость билета
                 
-                $place = Places::query()->where('id', $value['place_id'])->first();
+                $place = Place::query()->where('id', $value['place_id'])->first();
 
                 $chair_num = $place->chair_num;
                 $places[] = ['row' => $value['row_num'], 'chair_num' => $chair_num];

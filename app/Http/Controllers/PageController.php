@@ -3,26 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Film;
-use App\Models\FilmSessions;
+use App\Models\FilmSession;
 use App\Models\Hall;
-use App\Models\Places;
+use App\Models\Place;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-
+ 
 class PageController extends Controller
 {
     // CLIENT
-    public function welcome_page() 
+    public function welcomePage() 
     {
         // распределяем сессии по фильмам и по залам
         $films = Film::get();
         $halls = Hall::query()->get(['number', 'id', 'row', 'place']);
 
         foreach($films as $film) {
-            $all_film_sessions = FilmSessions::where('film_id', $film->id)
+            $all_film_sessions = FilmSession::where('film_id', $film->id)
                 ->orderBy('start_h', 'asc')
                 ->orderBy('start_m', 'asc')
                 ->get();
@@ -57,10 +57,10 @@ class PageController extends Controller
         ]);
     }
 
-    public function hall_page($sess_id, $hall_id, $date) {
+    public function hallPage($sess_id, $hall_id, $date) {
         $hall = Hall::query()->where('id', $hall_id)->first();
-        $session = FilmSessions::query()->where('id', $sess_id)->first();
-        $places = Places::query()->where('hall_id', $hall_id)->get();
+        $session = FilmSession::query()->where('id', $sess_id)->first();
+        $places = Place::query()->where('hall_id', $hall_id)->get();
         
         // получаем билеты по выбранному сеансу
         $tickets = Ticket::query()->where('sess_id', $sess_id)->get('places');
@@ -117,7 +117,7 @@ class PageController extends Controller
         ]);
     }
 
-    public function payment_page($id) {
+    public function paymentPage($id) {
         $ticket = Ticket::query()->where('id', $id)->first();
 
         $places_with_rows = json_decode($ticket->places);
@@ -134,7 +134,7 @@ class PageController extends Controller
         ]);
     }
 
-    public function ticket_page($id) {
+    public function ticketPage($id) {
         $ticket = Ticket::query()->where('id', $id)->first();
 
         $places_with_rows = json_decode($ticket->places);
@@ -156,14 +156,14 @@ class PageController extends Controller
      // login: test@example.com
      // pass: qwerty
 
-    public function login_page()
+    public function loginPage()
     {
         
         return view('admin.login');
         
     }
 
-    public function admin_page() {
+    public function adminPage() {
         $user = Auth::user();
         if($user && $user->is_admin) {
             $halls = Hall::get();
@@ -175,7 +175,7 @@ class PageController extends Controller
             // ]
             $places = null;
             if(isset($halls[0]) && $halls[0]->row) {
-                $p = Places::where('hall_id', $halls[0]->id)->get();
+                $p = Place::where('hall_id', $halls[0]->id)->get();
                 $counter = 0;
                 if($p) {
                     $places = [];

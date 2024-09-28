@@ -13,7 +13,7 @@ export default class ApiActivationSales {
 
     async update() {
         try {
-            const response = await fetch('/activate_sales');
+            const response = await fetch('/activate-sales');
 
             const result = await response.json();
 
