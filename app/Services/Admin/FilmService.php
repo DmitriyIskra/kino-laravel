@@ -5,7 +5,6 @@ namespace App\Services\Admin;
 use App\Models\Film;
 use App\Models\FilmSession;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -43,7 +42,7 @@ class FilmService
     /** 
      * Сохраняем фильм.
      */
-    public function saveFilm(Request $request)
+    public function saveFilm($request)
     {
         $file = $request->poster;
 
@@ -86,7 +85,7 @@ class FilmService
     /**
      * Обновляем фильм фильм.
      */
-    public function updateFilm(Request $request) {
+    public function updateFilm($request) {
         try {
             $file = isset($request->poster) ? $request->poster : null;
 

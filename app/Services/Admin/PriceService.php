@@ -3,7 +3,6 @@
 namespace App\Services\Admin;
 
 use App\Models\Hall;
-use Illuminate\Http\Request;
 
 class PriceService
 {
@@ -19,7 +18,7 @@ class PriceService
     /**
      * Обновление цен в зале.
      */
-    public function updateHallPrice(Request $request)
+    public function updateHallPrice($request)
     {
         $price_places = $request->price_places;
 

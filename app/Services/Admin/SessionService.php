@@ -5,7 +5,6 @@ namespace App\Services\Admin;
 use App\Models\Film;
 use App\Models\FilmSession;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class SessionService
@@ -13,7 +12,7 @@ class SessionService
     /**
      * Сохраняем сеанс
      */
-    public function saveSessionFilm(Request $request) 
+    public function saveSessionFilm($request) 
     {
         try {
             $film = Film::query()->where('id', $request->film)->first(['duration', 'title']);
@@ -54,7 +53,7 @@ class SessionService
     /**
      * Обновляем сеанс.
      */
-    public function updateSession(Request $request) {
+    public function updateSession($request) {
         try {
             $status = FilmSession::query()->where('id', $request->id)->update([
                 'start_h' => $request->hour,

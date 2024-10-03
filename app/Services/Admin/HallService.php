@@ -4,7 +4,6 @@ namespace App\Services\Admin;
 
 use App\Models\Hall;
 use App\Models\Place;
-use Illuminate\Http\Request;
 
 class HallService
 {
@@ -34,7 +33,7 @@ class HallService
     /**
      * Обновление конфигурации зала.
      */
-    public function updateHallConfigure(Request $request)
+    public function updateHallConfigure($request)
     {
         $id_hall = $request->id_hall;
         $amount_places = $request->amount_places;

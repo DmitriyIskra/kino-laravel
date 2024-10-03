@@ -12,123 +12,38 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
- 
-class PageController extends Controller
+use App\Services\Page\PageService;
+
+class PageController extends Controller 
 {
+
+    public function __construct(private PageService $pageService)
+    {}
+
     // CLIENT
     public function welcomePage() 
     {
-        // распределяем сессии по фильмам и по залам
-        $films = Film::get();
-        $halls = Hall::query()->get(['number', 'id', 'row', 'place']);
-
-        foreach($films as $film) {
-            $all_film_sessions = FilmSession::where('film_id', $film->id)
-                ->orderBy('start_h', 'asc')
-                ->orderBy('start_m', 'asc')
-                ->get();
-
-            $sessions_in_halls = [];
-            foreach($halls as $hall) {
-
-                $hall_num = $hall->number;
-
-                if(!isset($sessions_in_halls[$hall_num])) {
-                    $sessions_in_halls[$hall_num] = [];
-                }
-
-                foreach($all_film_sessions as $session) {
-
-                    // если места в зале не сформированы, сессии не попадут в массив для отображения
-                    if($session->hall_id === $hall->id && $hall->row) {
-                        if(isset($sessions_in_halls[$hall_num])) {
-                            array_push($sessions_in_halls[$hall_num], $session);
-                        };
-                        
-                    }
-                };
-            }
-
-            $film['sessions'] = $sessions_in_halls;
-            
-        }
+        $data = $this->pageService->welcomePage();
 
         return view('client.welcome', [
-            'films' => $films,
+            'films' => $data,
         ]);
     }
 
-    public function hallPage($sess_id, $hall_id, $date) {
-        $hall = Hall::query()->where('id', $hall_id)->first();
-        $session = FilmSession::query()->where('id', $sess_id)->first();
-        $places = Place::query()->where('hall_id', $hall_id)->get();
-        
-        // получаем билеты по выбранному сеансу
-        $tickets = Ticket::query()->where('sess_id', $sess_id)->get('places');
-        
-        // определяем занятость места в полученном массиве мест
-        if($tickets) {
-            // из билетов по сеансу выделяем места (это будут занятые места)
-            $nums_occupied_places = [];
-            foreach($tickets as $ticket) {
-                $ticket_dec = json_decode($ticket->places);
-                foreach($ticket_dec as $chair) {
-                    $nums_occupied_places[] = $chair->chair_num;
-                }
-            }
-
-            // перебераем полученные места по залу и ищем совпадения
-            foreach($places as $place) {
-                $chair_num = $place->chair_num;
-
-                $result = in_array($chair_num, $nums_occupied_places);
-
-                if($result) $place->is_free = 0;
-            }
-        }
-
-
-        // группируем кресла по рядам
-        // [
-            // ряд: [кресло, кресло, кресло,]
-            // ряд: [кресло, кресло, кресло,]
-        // ]
-        $group_places = [];
-        if($hall->row && $hall->place) {
-            $counter = 0; 
-            if($places) {
-                for($i = 0; $i < $hall->row; $i += 1) {
-                    $part = [];
-                    for($j = 0; $j < $hall->place; $j += 1) {
-                        $part[] = isset($places[$counter]) ? $places[$counter] : '';
-                        $counter += 1;
-                    }
-
-                    $group_places[] = $part;
-                }
-            }
-        }
-
+    public function hallPage($sess_id, $hall_id, $date) 
+    {
+       $arr_data = $this->pageService->hallPage($sess_id, $hall_id, $date);
 
         return view('client.hall',[
-            'hall' => $hall,
-            'session' => $session,
-            'places' => $group_places,
-            'date_of_booking' => $date,
+            'hall' => $arr_data['hall'],
+            'session' => $arr_data['session'],
+            'places' => $arr_data['group_places'],
+            'date_of_booking' => $arr_data['date'],
         ]);
     }
 
     public function paymentPage($id) {
-        $ticket = Ticket::query()->where('id', $id)->first();
-
-        $places_with_rows = json_decode($ticket->places);
-        $arr_places = [];
-        foreach($places_with_rows as $value) {
-            $arr_places[] = $value->chair_num;
-        } 
-
-        $places = implode(', ', $arr_places);
-        $ticket['places_string'] = $places;
+        $ticket = $this->pageService->paymentPage($id);
 
         return view('client.payment', [
             'ticket' => $ticket,
@@ -136,16 +51,7 @@ class PageController extends Controller
     }
 
     public function ticketPage($id) {
-        $ticket = Ticket::query()->where('id', $id)->first();
-
-        $places_with_rows = json_decode($ticket->places);
-        $arr_places = [];
-        foreach($places_with_rows as $value) {
-            $arr_places[] = $value->chair_num;
-        } 
-
-        $places = implode(', ', $arr_places);
-        $ticket['places_string'] = $places;
+        $ticket = $this->pageService->ticketPage($id);
 
         return view('client.ticket', [
             'ticket' => $ticket,
@@ -167,37 +73,13 @@ class PageController extends Controller
     public function adminPage() {
         $user = Auth::user();
         if($user && $user->is_admin) {
-            $halls = Hall::get();
 
-            // группируем кресла по рядам
-            // [
-                // ряд: [кресло, кресло, кресло,]
-                // ряд: [кресло, кресло, кресло,]
-            // ]
-            $places = null;
-            if(isset($halls[0]) && $halls[0]->row) {
-                $p = Place::where('hall_id', $halls[0]->id)->get();
-                $counter = 0;
-                if($p) {
-                    $places = [];
-                    for($i = 0; $i < $halls[0]->row; $i += 1) {
-                        $part = [];
-                        for($j = 0; $j < $halls[0]->place; $j += 1) {
-                            $part[] = isset($p[$counter]) ? $p[$counter] : '';
-                            $counter += 1;
-                        }
-
-                        $places[] = $part;
-                    }
-                }
-            }
-
-            $films = Film::get();
+            $data = $this->pageService->adminPage();            
 
             return view('admin.welcome', [
-                'halls' => $halls,
-                'places' => $places,
-                'films' => $films,
+                'halls' => $data['halls'],
+                'places' => $data['places'],
+                'films' => $data['films'],
             ]);
         }
 

@@ -2,7 +2,6 @@
 
 namespace App\Services\Admin;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserService
@@ -10,7 +9,7 @@ class UserService
     /**
      * Вход в админку
      */
-    public function index(Request $request)
+    public function index($request)
     {
         $validate = $request->validate([
             'email' => 'required|email',
