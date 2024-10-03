@@ -7,9 +7,12 @@ use App\Models\FilmSession;
 use App\Models\Hall;
 use App\Models\Place;
 use App\Models\Ticket;
+use Illuminate\Support\Facades\Log;
 
 class PageService
 {
+
+    // CLIENT
     public function welcomePage() 
     {
         // распределяем сессии по фильмам и по залам
@@ -140,17 +143,20 @@ class PageService
         return $ticket;
     }
 
+
+    // ADMIN
     public function adminPage() {
         $halls = Hall::get();
 
         // группируем кресла по рядам
         // [
             // ряд: [кресло, кресло, кресло,]
-            // ряд: [кресло, кресло, кресло,]
+            // ряд: [кресло, кресло, кресло,] 
         // ]
         $places = null;
         if(isset($halls[0]) && $halls[0]->row) {
-            $p = Place::where('hall_id', $halls[0]->id)->get();
+            $p = Hall::find(1)->place()->get();
+            // $p = Place::where('hall_id', $halls[0]->id)->get();
             $counter = 0;
             if($p) {
                 $places = [];

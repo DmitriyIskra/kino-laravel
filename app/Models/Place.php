@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Place extends Model
 {
     use HasFactory;
-
+ 
     protected $fillable = [
         'hall_id',
         'chair_num',

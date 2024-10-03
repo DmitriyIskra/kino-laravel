@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Hall extends Model
 {
     use HasFactory;
-
+ 
     protected $fillable = [
         'number',
         'row',
@@ -17,4 +17,9 @@ class Hall extends Model
         'price_vip',
         'sessions',
     ];
+
+    public function place()
+    {
+        return $this->hasMany(Place::class);
+    }
 }
