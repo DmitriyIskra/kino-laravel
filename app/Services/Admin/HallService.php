@@ -8,7 +8,7 @@ use App\Models\Place;
 class HallService
 {
    /**
-     * Создать и удалить зал.
+     * Создать и удалить зал. 
      */
     public function createHall() 
     {   
@@ -86,7 +86,7 @@ class HallService
                     }
                 }
 
-                $allHallPlaces = Place::where('hall_id', $id_hall)->get();
+                $allHallPlaces = Hall::find($id_hall)->place()->get();
                 if(count($allHallPlaces) > $counterUpdatedChairs) {
                     foreach ($allHallPlaces as $item) {
                         if (!in_array($item->chair_num, $chairNums)) {
@@ -112,7 +112,7 @@ class HallService
         // группируем кресла по рядам
         $places = null;
 
-        $arrPlaces = Place::where('hall_id', $id)->get();
+        $arrPlaces = Hall::find($id)->place()->get();
         $counter = 0;
         if($arrPlaces) {
             $chairs = [];

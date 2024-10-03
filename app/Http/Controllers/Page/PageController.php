@@ -30,6 +30,7 @@ class PageController extends Controller
         ]);
     }
 
+    /**страница где выбираем места в зале*/ 
     public function hallPage($sess_id, $hall_id, $date) 
     {
        $arr_data = $this->pageService->hallPage($sess_id, $hall_id, $date);
@@ -42,6 +43,7 @@ class PageController extends Controller
         ]);
     }
 
+    /**страница с оплатой (получить билет)*/ 
     public function paymentPage($id) {
         $ticket = $this->pageService->paymentPage($id);
 
@@ -50,6 +52,7 @@ class PageController extends Controller
         ]);
     }
 
+    /**страница с qr*/ 
     public function ticketPage($id) {
         $ticket = $this->pageService->ticketPage($id);
 

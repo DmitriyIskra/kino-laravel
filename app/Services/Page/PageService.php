@@ -52,11 +52,12 @@ class PageService
 
         return $films;
     }
-
+    /**страница где выбираем места в зале*/ 
     public function hallPage($sess_id, $hall_id, $date) {
         $hall = Hall::query()->where('id', $hall_id)->first();
         $session = FilmSession::query()->where('id', $sess_id)->first();
-        $places = Place::query()->where('hall_id', $hall_id)->get();
+        $places = Hall::find($hall_id)->place()->get();
+        // $places = Place::query()->where('hall_id', $hall_id)->get();
         
         // получаем билеты по выбранному сеансу
         $tickets = Ticket::query()->where('sess_id', $sess_id)->get('places');
@@ -113,6 +114,7 @@ class PageService
         ];
     }
 
+    /**страница с оплатой (получить билет)*/
     public function paymentPage($id) {
         $ticket = Ticket::query()->where('id', $id)->first();
 
@@ -128,6 +130,7 @@ class PageService
         return $ticket;
     }
 
+    /**страница с qr*/ 
     public function ticketPage($id) {
         $ticket = Ticket::query()->where('id', $id)->first();
 
@@ -155,7 +158,7 @@ class PageService
         // ]
         $places = null;
         if(isset($halls[0]) && $halls[0]->row) {
-            $p = Hall::find(1)->place()->get();
+            $p = Hall::find($halls[0]->id)->place()->get();
             // $p = Place::where('hall_id', $halls[0]->id)->get();
             $counter = 0;
             if($p) {
