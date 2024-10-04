@@ -15,43 +15,46 @@ class PageService
     // CLIENT
     public function welcomePage() 
     {
+        // film[session] => [
+            // 1 => [..., ...],
+            // 2 => [..., ...]
+        // ]
         // распределяем сессии по фильмам и по залам
         $films = Film::get();
         $halls = Hall::query()->get(['number', 'id', 'row', 'place']);
 
         foreach($films as $film) {
+
             $all_film_sessions = FilmSession::where('film_id', $film->id)
                 ->orderBy('start_h', 'asc')
                 ->orderBy('start_m', 'asc')
                 ->get();
-
+            
             $sessions_in_halls = [];
             foreach($halls as $hall) {
-
                 $hall_num = $hall->number;
-
+                
                 if(!isset($sessions_in_halls[$hall_num])) {
                     $sessions_in_halls[$hall_num] = [];
                 }
-
+                
                 foreach($all_film_sessions as $session) {
-
+                    
                     // если места в зале не сформированы, сессии не попадут в массив для отображения
                     if($session->hall_id === $hall->id && $hall->row) {
                         if(isset($sessions_in_halls[$hall_num])) {
                             array_push($sessions_in_halls[$hall_num], $session);
                         };
-                        
                     }
                 };
             }
-
             $film['sessions'] = $sessions_in_halls;
             
         }
-
+        
         return $films;
     }
+
     /**страница где выбираем места в зале*/ 
     public function hallPage($sess_id, $hall_id, $date) {
         $hall = Hall::query()->where('id', $hall_id)->first();
@@ -60,7 +63,7 @@ class PageService
         // $places = Place::query()->where('hall_id', $hall_id)->get();
         
         // получаем билеты по выбранному сеансу
-        $tickets = Ticket::query()->where('sess_id', $sess_id)->get('places');
+        $tickets = FilmSession::find($sess_id)->ticket()->get('places');
         
         // определяем занятость места в полученном массиве мест
         if($tickets) {

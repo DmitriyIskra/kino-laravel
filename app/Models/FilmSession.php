@@ -17,4 +17,9 @@ class FilmSession extends Model
         'start_m',
         'duration',
     ];
+
+    public function ticket()
+    {
+        return $this->hasMany(Ticket::class, 'sess_id');
+    }
 }

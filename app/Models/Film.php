@@ -18,4 +18,9 @@ class Film extends Model
         'country',
         'halls_id',
     ];
+
+    public function filmSession()
+    {
+        return $this->hasMany(FilmSession::class);
+    }
 }

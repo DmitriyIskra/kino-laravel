@@ -22,4 +22,9 @@ class Hall extends Model
     {
         return $this->hasMany(Place::class);
     }
+
+    public function filmSession()
+    {
+        return $this->hasMany(FilmSession::class);
+    }
 }
