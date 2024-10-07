@@ -20,9 +20,9 @@ class PriceService
      */
     public function updateHallPrice($request)
     {
-        $price_places = $request->price_places;
+        $price_places = $request['price_places'];
 
-        $result = Hall::where('id', $request->id_hall)
+        $result = Hall::where('id', $request['id_hall'])
             ->update([
                 'price_standart' => $price_places['standart'],
                 'price_vip' => $price_places['vip'],

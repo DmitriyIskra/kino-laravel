@@ -24,11 +24,7 @@ class PageService
         $halls = Hall::query()->get(['number', 'id', 'row', 'place']);
 
         foreach($films as $film) {
-
-            $all_film_sessions = FilmSession::where('film_id', $film->id)
-                ->orderBy('start_h', 'asc')
-                ->orderBy('start_m', 'asc')
-                ->get();
+            $all_film_sessions = Film::find($film->id)->filmSession()->orderBy('start_h', 'asc')->orderBy('start_m', 'asc')->get();
             
             $sessions_in_halls = [];
             foreach($halls as $hall) {

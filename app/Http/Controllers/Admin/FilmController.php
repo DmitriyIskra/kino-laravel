@@ -4,15 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
+use App\Http\Requests\Admin\SaveFilmRequest;
+use App\Http\Requests\Admin\UpdateFilmRequest;
 use App\Services\Admin\FilmService;
-
+use App\Services\Validation\ValidationService;
 use Illuminate\Http\Request;
-
-
+use Illuminate\Support\Facades\Log;
 
 class FilmController extends Controller
 {
-    public function __construct(private FilmService $filmService)
+    public function __construct(private FilmService $filmService, private ValidationService $validationService)
     {        
     }
 
@@ -21,6 +22,10 @@ class FilmController extends Controller
      */
     public function getFilm($id) 
     {
+        $result = $this->validationService->validationId($id);
+
+        if(!$result) return;
+
         $film = $this->filmService->getFilm($id);
 
         return response()->json($film);
@@ -39,9 +44,12 @@ class FilmController extends Controller
     /** 
      * Сохраняем фильм.
      */
-    public function saveFilm(Request $request)
+    public function saveFilm(SaveFilmRequest $request)
     {
-        $data = $this->filmService->saveFilm($request);
+        $result = $request->validated();
+        if(!$result) return;
+ 
+        $data = $this->filmService->saveFilm($request->all());
 
         return response()->json($data);
     }
@@ -49,9 +57,13 @@ class FilmController extends Controller
     /**
      * Обновляем фильм фильм.
      */
-    public function updateFilm(Request $request)
+    public function updateFilm(UpdateFilmRequest $request)
     {
-        $data = $this->filmService->updateFilm($request);
+        $result = $request->validated();
+        Log::info('val', ['' => $result]);
+        if(!$result) return;
+
+        $data = $this->filmService->updateFilm($request->all());
 
         return response()->json($data);
     }
@@ -61,6 +73,10 @@ class FilmController extends Controller
      */
     public function destroyFilm($id)
     {
+        $result = $this->validationService->validationId($id);
+
+        if(!$result) return;
+
         $data = $this->filmService->destroyFilm($id);
 
         return response()->json($data);

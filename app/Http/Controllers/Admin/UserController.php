@@ -11,14 +11,19 @@ class UserController extends Controller
 {
 
     public function __construct(private UserService $userService)
-    {}
+    {} 
 
     /**
      * Вход в админку
      */
     public function index(Request $request)
     {
-        $data = $this->userService->index($request);
+        $validate = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $data = $this->userService->index($validate);
         
         if($data) {
             return redirect()->intended('/admin');

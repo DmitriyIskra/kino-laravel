@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Client\BookingRequest;
 use App\Models\FilmSession;
 use App\Models\Hall;
 use App\Models\Place;
@@ -25,10 +26,13 @@ class ApiClientController extends Controller
     /**
      * Создает билет
      * */ 
-    public function booking(Request $request)
+    public function booking(BookingRequest $request)
     {
-        $data = $this->clientService->booking($request);
+        $result = $request->validated();
+        if(!$result) return;
+
+        $data = $this->clientService->booking($request->all());
 
         return response()->json($data);
     }
-}
+} 

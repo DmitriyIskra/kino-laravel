@@ -15,19 +15,17 @@ class SessionService
     public function saveSessionFilm($request) 
     {
         try {
-            $film = Film::query()->where('id', $request->film)->first(['duration', 'title']);
+            $film = Film::query()->where('id', $request['film'])->first(['duration', 'title']);
     
             $session = FilmSession::query()->create([
-                'film_id' => $request->film,
-                'hall_id' => $request->id_hall,
-                'start_h' => $request->hour,
-                'start_m' => $request->min,
+                'film_id' => $request['film'],
+                'hall_id' => $request['id_hall'],
+                'start_h' => $request['hour'],
+                'start_m' => $request['min'],
                 'duration' => $film->duration,
                 'film_name' => $film->title,
             ]);
-    
-            Log::info('session', [$session]);
-    
+        
        
             return [
                 'result' => true,
@@ -55,12 +53,12 @@ class SessionService
      */
     public function updateSession($request) {
         try {
-            $status = FilmSession::query()->where('id', $request->id)->update([
-                'start_h' => $request->hour,
-                'start_m' => $request->min,
+            $status = FilmSession::query()->where('id', $request['id'])->update([
+                'start_h' => $request['hour'],
+                'start_m' => $request['min'],
             ]);
 
-            $session = FilmSession::query()->where('id', $request->id)->first();
+            $session = FilmSession::query()->where('id', $request['id'])->first();
 
             if($status) {
                 return [

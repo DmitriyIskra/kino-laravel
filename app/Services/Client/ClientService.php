@@ -18,9 +18,9 @@ class ClientService
      * Создает билет
      * */ 
     public function booking($request)
-    {
+    { 
         try {  
-            $data = $request->all();
+            $data = $request;
 
             $session = FilmSession::query()->where('id', $data['places'][0]['session_id'])->first();
             // складываем общую стоимость
@@ -38,7 +38,7 @@ class ClientService
             // зал в котором будет проходить сеанс
             $hall = Hall::query()->where('id', $data['places'][0]['hall_id'])->first();
             // дата бронирования
-            $date_of_booking = $request->date;
+            $date_of_booking = $request['date'];
             $arr_places_for_qr[] = "Дата: {$date_of_booking}"; 
             
             
@@ -62,10 +62,7 @@ class ClientService
 
             $url = asset("img/qr_codes/$name");
 
-      
-      
-        
-       
+
         // добавить в миграцию дату бронирования в секундах (timestamp)
         // сохранять дату бронирования в секундах
 

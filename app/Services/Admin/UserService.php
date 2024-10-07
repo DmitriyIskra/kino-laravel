@@ -7,17 +7,12 @@ use Illuminate\Support\Facades\Auth;
 class UserService
 {
     /**
-     * Вход в админку
+     * Вход в админку 
      */
-    public function index($request)
-    {
-        $validate = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-        
+    public function index($validate)
+    {        
         if(Auth::attempt($validate)) {
-            $request->session()->regenerate();
+            session()->regenerate();
             return true;
         }
 

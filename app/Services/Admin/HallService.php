@@ -35,9 +35,9 @@ class HallService
      */
     public function updateHallConfigure($request)
     {
-        $id_hall = $request->id_hall;
-        $amount_places = $request->amount_places;
-        $places = $request->typesPlaces;
+        $id_hall = $request['id_hall'];
+        $amount_places = $request['amount_places'];
+        $places = $request['typesPlaces'];
 
         $hallBeforeUpdate = Hall::find($id_hall);
 

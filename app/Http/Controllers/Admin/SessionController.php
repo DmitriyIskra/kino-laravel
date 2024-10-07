@@ -3,24 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\SaveSessionFilmRequest;
+use App\Http\Requests\Admin\UpdateSessionRequest;
 use App\Services\Admin\SessionService;
+use App\Services\Validation\ValidationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SessionController extends Controller
 {
-    public function __construct(private SessionService $sessionService)
+    public function __construct(private SessionService $sessionService, private ValidationService $validationService)
     {}
 
     /**
      * Сохраняем сеанс
      */
-    public function saveSessionFilm(Request $request) 
+    public function saveSessionFilm(SaveSessionFilmRequest $request) 
     {
+        $result = $request->validated();
+        if(!$result) return;
         
-        $data = $this->sessionService->saveSessionFilm($request);
+        $data = $this->sessionService->saveSessionFilm($request->all());
 
         return response()->json($data);
-        
     }
 
     /**
@@ -38,9 +43,14 @@ class SessionController extends Controller
     /**
      * Обновляем сеанс.
      */
-    public function updateSession(Request $request) {
-        
-        $data = $this->sessionService->updateSession($request);
+    public function updateSession(UpdateSessionRequest $request) 
+    {
+
+        $result = $request->validated();
+
+        if(!$result) return;
+
+        $data = $this->sessionService->updateSession($request->all());
         
         return response()->json($data);
         
@@ -49,8 +59,12 @@ class SessionController extends Controller
     /**
      * Удаляем сеанс.
      */
-    public function destroySession($id) {
-        
+    public function destroySession($id) 
+    {
+        $result = $this->validationService->validationId($id);
+
+        if(!$result) return;
+
         $data = $this->sessionService->destroySession($id);
 
         return response()->json($data);

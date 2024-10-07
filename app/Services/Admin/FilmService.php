@@ -44,7 +44,7 @@ class FilmService
      */
     public function saveFilm($request)
     {
-        $file = $request->poster;
+        $file = $request['poster'];
 
         $nameOrigin = $file->getClientOriginalName();
         $extension = $file->extension();
@@ -57,10 +57,10 @@ class FilmService
 
         $result = Film::query()->create([
             'poster' => $url,
-            'title' => $request->title,
-            'description' => $request->description,
-            'duration' => $request ->duration,
-            'country' => $request ->country,
+            'title' => $request['title'],
+            'description' => $request['description'],
+            'duration' => $request['duration'],
+            'country' => $request['country'],
         ]);
         
         
@@ -87,15 +87,15 @@ class FilmService
      */
     public function updateFilm($request) {
         try {
-            $file = isset($request->poster) ? $request->poster : null;
+            $file = isset($request['poster']) ? $request['poster'] : null;
 
             Film::query()
-                ->where('id', $request->film_id)
+                ->where('id', $request['film_id'])
                 ->update([
-                    'title' => $request->title,
-                    'description' => $request->description,
-                    'duration' => $request ->duration,
-                    'country' => $request ->country,
+                    'title' => $request['title'],
+                    'description' => $request['description'],
+                    'duration' => $request['duration'],
+                    'country' => $request['country'],
                 ]);
             // если передан новый постер
             if($file) {
@@ -110,7 +110,7 @@ class FilmService
 
                 // Удаляем старый файл вместе с директорией
                 $oldPoster = Film::query()
-                    ->where('id', $request->film_id)->first('poster')->poster;
+                    ->where('id', $request['film_id'])->first('poster')->poster;
 
                 $pathOldPoster = preg_replace('/https:\/\/kinizal\//', '', $oldPoster);
 
@@ -120,18 +120,18 @@ class FilmService
 
                 // Обновляем путь к новому постеру
                 $resultUrl = Film::query()
-                    ->where('id', $request->film_id)
+                    ->where('id', $request['film_id'])
                     ->update(['poster' => $url,]);
             }
 
             
             // Обновляем данные в сессиях к фильму
             $film = Film::query()
-                ->where('id', $request->film_id)
+                ->where('id', $request['film_id'])
                 ->first();
             
             FilmSession::query()
-                ->where('film_id', $request->film_id)
+                ->where('film_id', $request['film_id'])
                 ->update([
                     'duration' => $film->duration,
                     'film_name' => $film->title,
