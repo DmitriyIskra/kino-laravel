@@ -10,4 +10,11 @@ class ValidationService
             ['id' => 'required|integer']
         );
     }
+
+    public function validationDate($date) {
+        return validator(
+            ['id' => (int)$date],
+            ['id' => 'required|date']
+        );
+    }
 }
