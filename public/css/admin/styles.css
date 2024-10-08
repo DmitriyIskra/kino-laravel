@@ -52,6 +52,8 @@ select {
   text-align: center;
 }
 
+
+
 .conf-steps,
 .page-header {
   width: 972px;
@@ -67,6 +69,19 @@ select {
 .page-header {
   color: #FFFFFF;
   text-transform: uppercase;
+}
+
+.page-header__logout {
+  position: absolute;
+  top: 4%;
+  right: 4%;
+
+  font-weight: 900;
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  color: #FFFFFF;
 }
 
 .page-header .page-header__title {

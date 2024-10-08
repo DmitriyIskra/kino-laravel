@@ -88,9 +88,11 @@ class PageController extends Controller
         
     }
 
-    public function adminPage() {
+    public function adminPage() 
+    {
         $user = Auth::user();
-        if($user && $user->is_admin) {
+
+        if($user->is_admin) {
 
             $data = $this->pageService->adminPage();            
 
@@ -100,6 +102,17 @@ class PageController extends Controller
                 'films' => $data['films'],
             ]);
         }
+
+        return to_route('client_welcome');
+    }
+
+    public function logout() 
+    {
+        Auth::logout();
+
+        session()->invalidate();
+
+        session()->regenerateToken();
 
         return to_route('client_welcome');
     }

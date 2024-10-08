@@ -14,7 +14,7 @@
 
 <body>
   <div class="admin__login">
-    <a href="/login" title="login">Администраторская</a>
+    <a href={{ Auth::check() ? '/admin' : '/login' }} title="login">Администраторская</a>
   </div>
 
   <header class="page-header">

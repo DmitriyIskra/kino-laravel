@@ -18,6 +18,7 @@
 <body> 
 
   <header class="page-header">
+    <a class="page-header__logout" href="/logout">Выход</a>
     <h1 class="page-header__title">Идём<span>в</span>кино</h1>
     <span class="page-header__subtitle">Администраторская</span>
   </header>

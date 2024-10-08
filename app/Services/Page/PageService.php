@@ -22,7 +22,7 @@ class PageService
         // распределяем сессии по фильмам и по залам
         $films = Film::get();
         $halls = Hall::query()->get(['number', 'id', 'row', 'place']);
-
+            
         foreach($films as $film) {
             $all_film_sessions = Film::find($film->id)->filmSession()->orderBy('start_h', 'asc')->orderBy('start_m', 'asc')->get();
             
